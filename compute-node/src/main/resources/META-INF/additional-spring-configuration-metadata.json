@@ -1,0 +1,38 @@
+{
+  "groups": [
+    {
+      "name": "project-nebula.compute-node.cloud-datasource",
+      "type": "org.springframework.boot.autoconfigure.web.ServerProperties",
+      "sourceType": "org.springframework.boot.autoconfigure.web.ServerProperties",
+      "description": "Custom properties for Project Nebula's compute node."
+    },
+    {
+      "name": "project-nebula.compute-node.hypervisor",
+      "type": "org.springframework.boot.autoconfigure.web.ServerProperties",
+      "sourceType": "org.springframework.boot.autoconfigure.web.ServerProperties",
+      "description": "Custom properties for Project Nebula's compute node hypervisor."
+    }
+  ],
+  "properties": [
+    {
+      "name": "project-nebula.compute-node.cloud-datasource.url",
+      "type": "java.lang.String",
+      "description": "Cloud datasource url for fetching VM instance configuration file."
+    },
+    {
+      "name": "project-nebula.compute-node.hypervisor.kvm.connection.uri",
+      "type": "java.lang.String",
+      "description": "KVM hypervisor connection uri."
+    },
+    {
+      "name": "project-nebula.compute-node.hypervisor.type",
+      "type": "java.lang.String",
+      "description": "Compute Node available hypervisor."
+    },
+    {
+      "name": "project-nebula.compute-node.hypervisor.storage-pool.default",
+      "type": "java.lang.String",
+      "description": "Compute Node default storage pool name."
+    }
+  ]
+}

@@ -1,0 +1,79 @@
+plugins {
+	id 'java'
+	id 'org.springframework.boot' version '3.4.1'
+	id 'io.spring.dependency-management' version '1.1.7'
+	id 'com.google.protobuf' version '0.9.4'
+}
+
+group = 'com.project-nebula'
+version = '0.0.1-SNAPSHOT'
+
+java {
+	toolchain {
+		languageVersion = JavaLanguageVersion.of(21)
+	}
+}
+
+configurations {
+	compileOnly {
+		extendsFrom annotationProcessor
+	}
+}
+
+repositories {
+	mavenCentral()
+	maven { url 'https://repo.spring.io/snapshot' }
+	maven { url 'https://libvirt.org/maven2/' }
+}
+
+ext {
+	set('springGrpcVersion', "0.3.0-SNAPSHOT")
+}
+
+dependencies {
+	implementation 'org.springframework.boot:spring-boot-starter-actuator'
+	implementation 'org.springframework.boot:spring-boot-starter-oauth2-client'
+	implementation 'org.springframework.boot:spring-boot-starter-security'
+	implementation 'org.springframework.boot:spring-boot-starter-web'
+	implementation 'io.grpc:grpc-services'
+	implementation 'org.springframework.grpc:spring-grpc-spring-boot-starter'
+	compileOnly 'org.projectlombok:lombok'
+	developmentOnly 'org.springframework.boot:spring-boot-devtools'
+	annotationProcessor 'org.springframework.boot:spring-boot-configuration-processor'
+	annotationProcessor 'org.projectlombok:lombok'
+	testImplementation 'org.springframework.boot:spring-boot-starter-test'
+	testImplementation 'org.springframework.grpc:spring-grpc-test'
+	testImplementation 'org.springframework.security:spring-security-test'
+	testRuntimeOnly 'org.junit.platform:junit-platform-launcher'
+	implementation group: 'org.libvirt', name: 'libvirt', version: '0.5.3'
+	implementation group: 'net.java.dev.jna', name: 'jna', version: '5.16.0'
+}
+
+dependencyManagement {
+	imports {
+		mavenBom "org.springframework.grpc:spring-grpc-dependencies:${springGrpcVersion}"
+	}
+}
+
+protobuf {
+	protoc {
+		artifact = 'com.google.protobuf:protoc'
+	}
+	plugins {
+		grpc {
+			artifact = 'io.grpc:protoc-gen-grpc-java'
+		}
+	}
+	generateProtoTasks {
+		all()*.plugins {
+			grpc {
+				option 'jakarta_omit'
+				option '@generated=omit'
+			}
+		}
+	}
+}
+
+tasks.named('test') {
+	useJUnitPlatform()
+}
