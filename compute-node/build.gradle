@@ -23,7 +23,6 @@ configurations {
 repositories {
 	mavenCentral()
 	maven { url 'https://repo.spring.io/snapshot' }
-	maven { url 'https://libvirt.org/maven2/' }
 }
 
 ext {
@@ -45,8 +44,6 @@ dependencies {
 	testImplementation 'org.springframework.grpc:spring-grpc-test'
 	testImplementation 'org.springframework.security:spring-security-test'
 	testRuntimeOnly 'org.junit.platform:junit-platform-launcher'
-	implementation group: 'org.libvirt', name: 'libvirt', version: '0.5.3'
-	implementation group: 'net.java.dev.jna', name: 'jna', version: '5.16.0'
 }
 
 dependencyManagement {
