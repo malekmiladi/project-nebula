@@ -1,0 +1,37 @@
+plugins {
+    id 'java'
+}
+
+group = 'com.project_nebula'
+version = '1.0-SNAPSHOT'
+
+java {
+    toolchain {
+        languageVersion = JavaLanguageVersion.of(21)
+    }
+}
+
+repositories {
+    mavenCentral()
+    maven { url 'https://libvirt.org/maven2/' }
+}
+
+dependencies {
+    testImplementation platform('org.junit:junit-bom:5.10.0')
+    testImplementation 'org.junit.jupiter:junit-jupiter'
+
+    compileOnly 'org.projectlombok:lombok:1.18.36'
+    annotationProcessor 'org.projectlombok:lombok:1.18.36'
+
+    testCompileOnly 'org.projectlombok:lombok:1.18.36'
+    testAnnotationProcessor 'org.projectlombok:lombok:1.18.36'
+
+    implementation group: 'org.slf4j', name: 'slf4j-api', version: '2.0.16'
+
+    implementation group: 'org.libvirt', name: 'libvirt', version: '0.5.3'
+    implementation group: 'net.java.dev.jna', name: 'jna', version: '5.16.0'
+}
+
+test {
+    useJUnitPlatform()
+}
