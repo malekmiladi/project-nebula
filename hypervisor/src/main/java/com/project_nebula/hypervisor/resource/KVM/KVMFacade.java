@@ -7,7 +7,6 @@ import com.project_nebula.hypervisor.utils.Result;
 import lombok.extern.slf4j.Slf4j;
 import org.libvirt.*;
 
-import java.text.MessageFormat;
 import java.util.HashMap;
 
 @Slf4j
@@ -28,9 +27,11 @@ public class KVMFacade {
 
     public Connect connectToHypervisor(String hypervisorUri) throws Exception {
         try {
-            return new Connect(hypervisorUri);
+            Connect conn = new Connect(hypervisorUri);
+            log.info("Connected to Hypervisor at \"{}\"", hypervisorUri);
+            return conn;
         } catch (LibvirtException exception) {
-            log.error("Failed to connect to hypervisor: {}", exception.getMessage());
+            log.error("Failed to connect to hypervisor at \"{}\": {}", hypervisorUri, exception.getMessage());
             throw new Exception("Failed to connect to hypervisor. Please verify that your system supports KVM virtualization.");
         }
     }

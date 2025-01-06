@@ -20,7 +20,9 @@ public class StorageManager {
 
     public StoragePool fetchDefaultStoragePool(Connect hypervisorConn, String defaultStoragePoolName) throws Exception {
         try {
-            return hypervisorConn.storagePoolLookupByName(defaultStoragePoolName);
+            StoragePool defaultStoragePool = hypervisorConn.storagePoolLookupByName(defaultStoragePoolName);
+            log.info("Found default storage pool: {}", defaultStoragePoolName);
+            return defaultStoragePool;
         } catch (LibvirtException exception) {
             log.warn("Could not find storage pool '{}': {}", defaultStoragePoolName, exception.getMessage());
             log.info("Creating storage pool '{}'", defaultStoragePoolName);
@@ -39,10 +41,9 @@ public class StorageManager {
                     .stepBack(1)
                     .addChild("target")
                     .addChild("path")
-                    .setText("/var/lib/libvirt/images")
+                    .setText("/var/project-nebula/storage")
                     .build();
         } catch (Exception exception) {
-            log.error("Failed to define storage '{}' pool XML description: {}", defaultStoragePoolName, exception.getMessage());
             throw new Exception(MessageFormat.format("Failed to create XML description for storage pool \"{0}\"", defaultStoragePoolName), exception);
         }
 

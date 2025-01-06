@@ -33,6 +33,31 @@
       "name": "project-nebula.compute-node.hypervisor.storage-pool.default",
       "type": "java.lang.String",
       "description": "Compute Node default storage pool name."
+    },
+    {
+      "name": "project-nebula.compute-node.grpc.server.url",
+      "type": "java.lang.String",
+      "description": "The Orchestrator's gRPC server URL."
+    },
+    {
+      "name": "project-nebula.compute-node.grpc.server.host",
+      "type": "java.lang.String",
+      "description": "The Orchestrator's gRPC server host."
+    },
+    {
+      "name": "project-nebula.compute-node.grpc.server.port",
+      "type": "java.lang.String",
+      "description": "The Orchestrator's gRPC server host."
+    },
+    {
+      "name": "project-nebula.compute-node.service.id",
+      "type": "java.lang.String",
+      "description": "Compute Node's ID."
+    },
+    {
+      "name": "project-nebula.compute-node.service.id.file",
+      "type": "java.lang.String",
+      "description": "Compute Node's id file."
     }
   ]
 }

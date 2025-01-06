@@ -16,9 +16,9 @@ public class KVMInterface implements HypervisorInterface {
 
     private KVMFacade facade;
 
-    public KVMInterface() throws Exception {
+    public KVMInterface(ComputeConfiguration conf) {
         try {
-            this.facade = new KVMFacade(ComputeConfiguration.HYPER_VISOR_CONNECTION_URI, ComputeConfiguration.STORAGE_POOL_NAME);
+            this.facade = new KVMFacade(conf.getHyperVisorConnectionURI(), conf.getStoragePoolName());
         } catch (Exception e) {
             log.error("An error occurred while initializing KVM environment:\n{}", e.getMessage());
             ApplicationControl.exit(1);

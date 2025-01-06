@@ -1,0 +1,20 @@
+syntax = "proto3";
+option java_multiple_files = true;
+option java_package = "com.project_nebula.compute_node.grpc.orchestrator_registration.proto";
+
+message RegistrationParameters {
+  string id = 1;
+  int32 spareCpus = 2;
+  int32 spareMemory = 3;
+  int32 spareStorage = 4;
+  string region = 5;
+}
+
+message RegistrationAcknowledge {
+  bool ack = 1;
+  string id = 2;
+}
+
+service OrchestratorRegistration {
+  rpc registerComputeNode(RegistrationParameters) returns (RegistrationAcknowledge);
+}

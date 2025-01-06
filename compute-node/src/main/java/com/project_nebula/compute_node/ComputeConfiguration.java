@@ -1,28 +1,102 @@
 package com.project_nebula.compute_node;
 
+import lombok.Getter;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Value;
-import org.springframework.context.annotation.Configuration;
+import org.springframework.stereotype.Component;
 
-@Configuration
+import java.io.BufferedWriter;
+import java.io.File;
+import java.io.FileWriter;
+import java.io.IOException;
+import java.nio.charset.StandardCharsets;
+import java.nio.file.Files;
+
+@Getter
+@Component
+@Slf4j
 public class ComputeConfiguration {
 
-    public static String HYPER_VISOR_CONNECTION_URI;
-    public static String CLOUD_DATASOURCE_URL;
-    public static String STORAGE_POOL_NAME;
+    private String id;
+    private String idFilePath;
+    private String hyperVisorConnectionURI;
+    private String cloudDatasourceUri;
+    private String storagePoolName;
+    private String grpcServerHostname;
+    private int grpcServerPort;
+    private boolean grpcServerTLSEnable;
+    private int spareCpus;
+    private int spareMemory;
+    private int spareStorage;
+    private String region;
+
+    @Value("${project-nebula.compute-node.service.id}")
+    private void setId(String id) {
+        this.id = id;
+    }
+
+    @Value("${project-nebula.compute-node.service.id.file}")
+    private void setIdFilePath(String idFilePath) {
+        this.idFilePath = idFilePath;
+    }
 
     @Value("${project-nebula.compute-node.hypervisor.kvm.connection.uri}")
-    public void setHypervisorConnectionURI(final String hypervisorConnectionURI) {
-        HYPER_VISOR_CONNECTION_URI = hypervisorConnectionURI;
+    private void setHyperVisorConnectionURI(String hyperVisorConnectionURI) {
+        this.hyperVisorConnectionURI = hyperVisorConnectionURI;
     }
 
     @Value("${project-nebula.compute-node.cloud-datasource.url}")
-    public void setCloudDataSourceURL(final String cloudDataSourceURL) {
-        CLOUD_DATASOURCE_URL = cloudDataSourceURL;
+    private void setCloudDatasourceUri(String cloudDatasourceUri) {
+        this.cloudDatasourceUri = cloudDatasourceUri;
     }
 
     @Value("${project-nebula.compute-node.hypervisor.storage-pool.default}")
-    public void setStoragePoolName(final String storagePoolName) {
-        STORAGE_POOL_NAME = storagePoolName;
+    private void setStoragePoolName(String storagePoolName) {
+        this.storagePoolName = storagePoolName;
+    }
+
+    @Value("${project-nebula.compute-node.grpc.server.host}")
+    private void setGrpcServerHostname(String grpcServerHostname) {
+        this.grpcServerHostname = grpcServerHostname;
+    }
+
+    @Value("${project-nebula.compute-node.grpc.server.port}")
+    private void setGrpcServerPort(int grpcServerPort) {
+        this.grpcServerPort = grpcServerPort;
+    }
+
+    @Value("${project-nebula.compute-node.grpc.server.tls}")
+    private void setGrpcServerTLSEnable(boolean grpcServerTLSEnable) {
+        this.grpcServerTLSEnable = grpcServerTLSEnable;
+    }
+
+    @Value("${project-nebula.compute-node.resource.cpu}")
+    private void setSpareCpus(int spareCpus) {
+        this.spareCpus = spareCpus;
+    }
+
+    @Value("${project-nebula.compute-node.resource.memory}")
+    private void setSpareMemory(int spareMemory) {
+        this.spareMemory = spareMemory;
+    }
+
+    @Value("${project-nebula.compute-node.resource.storage}")
+    private void setSpareStorage(String spareStorage) {
+        this.spareStorage = Integer.parseInt(spareStorage);
+    }
+
+    @Value("${project-nebula.compute-node.service.region}")
+    private void setRegion(String region) {
+        this.region = region;
+    }
+
+    public void setNewId(String id) throws IOException {
+        this.id = id;
+        File idFile = new File(idFilePath);
+        FileWriter fw = new FileWriter(idFile.getAbsoluteFile());
+        fw.write("project-nebula.compute-node.service.id=" + id + "\n");
+        fw.flush();
+        fw.close();
     }
 
 }

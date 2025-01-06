@@ -1,0 +1,15 @@
+allprojects {
+    repositories {
+        mavenCentral()
+    }
+}
+
+subprojects {
+    afterEvaluate { project ->
+        repositories {
+            if (project.name == 'compute-node') {
+                maven { url 'https://download.libvirt.org/maven2' }
+            }
+        }
+    }
+}

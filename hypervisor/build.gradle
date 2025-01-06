@@ -13,7 +13,7 @@ java {
 
 repositories {
     mavenCentral()
-    maven { url 'https://libvirt.org/maven2/' }
+    maven { url 'https://download.libvirt.org/maven2' }
 }
 
 dependencies {
