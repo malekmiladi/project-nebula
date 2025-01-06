@@ -7,6 +7,7 @@ import com.project_nebula.hypervisor.utils.Result;
 import lombok.extern.slf4j.Slf4j;
 import org.libvirt.*;
 
+import java.text.MessageFormat;
 import java.util.HashMap;
 
 @Slf4j
@@ -18,19 +19,19 @@ public class KVMFacade {
     private final StorageManager storageManager;
     private final NetworkManager networkManager;
 
-    public KVMFacade(String hyperVisorConnectionUri, String defaultStoragePoolName) {
+    public KVMFacade(String hyperVisorConnectionUri, String defaultStoragePoolName) throws Exception {
         HYPERVISOR_CONNECTION = connectToHypervisor(hyperVisorConnectionUri);
         storageManager = new StorageManager(HYPERVISOR_CONNECTION, defaultStoragePoolName);
         domainManager = new DomainManager(HYPERVISOR_CONNECTION);
         networkManager = new NetworkManager(HYPERVISOR_CONNECTION);
     }
 
-    public Connect connectToHypervisor(String hypervisorUri) {
+    public Connect connectToHypervisor(String hypervisorUri) throws Exception {
         try {
             return new Connect(hypervisorUri);
         } catch (LibvirtException exception) {
             log.error("Failed to connect to hypervisor: {}", exception.getMessage());
-            return null;
+            throw new Exception("Failed to connect to hypervisor. Please verify that your system supports KVM virtualization.");
         }
     }
 

@@ -13,6 +13,7 @@ import javax.xml.parsers.ParserConfigurationException;
 import javax.xml.transform.TransformerException;
 import java.net.Inet4Address;
 import java.net.Inet6Address;
+import java.text.MessageFormat;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.HashMap;
@@ -128,21 +129,28 @@ public class DomainManager {
                 .build();
     }
 
-    public Domain createDomain(String id, VirtualMachineSpecs specs, String cloudDataSource) throws ParserConfigurationException, TransformerException, NullPointerException, LibvirtException {
-        String domainXMLDescription = createDomainXMLDescription(id, specs, cloudDataSource);
-        Domain domain = hypervisorConn.domainDefineXML(domainXMLDescription);
-        domain.setAutostart(true);
-        domain.create();
-        return domain;
+    public Domain createDomain(String id, VirtualMachineSpecs specs, String cloudDataSource) throws Exception {
+        try {
+            String domainXMLDescription = createDomainXMLDescription(id, specs, cloudDataSource);
+            Domain domain = hypervisorConn.domainDefineXML(domainXMLDescription);
+            domain.setAutostart(true);
+            domain.create();
+            return domain;
+        } catch (Exception e) {
+            throw new Exception(MessageFormat.format("Failed to create domain with id:\"{0}\".\n{1}", id, e.getMessage()), e);
+        }
     }
 
-    public HashMap<String, String> awaitForIpAssignment(Domain domain) throws LibvirtException {
+    public HashMap<String, String> awaitForIpAssignment(Domain domain) throws Exception {
         HashMap<String, String> ipAddresses = new HashMap<>();
         Collection<DomainInterface> interfaces = new ArrayList<>();
         do {
-            interfaces = domain.interfaceAddresses(Domain.InterfaceAddressesSource.VIR_DOMAIN_INTERFACE_ADDRESSES_SRC_LEASE, 0);
-        }
-        while (interfaces.isEmpty());
+            try {
+                interfaces = domain.interfaceAddresses(Domain.InterfaceAddressesSource.VIR_DOMAIN_INTERFACE_ADDRESSES_SRC_LEASE, 0);
+            } catch (Exception e) {
+                throw new Exception(MessageFormat.format("Failed to fetch interfaces for domain \"{0}\".\n{1}", domain.getName(), e.getMessage()), e);
+            }
+        } while (interfaces.isEmpty());
         for (DomainInterface domainInterface : interfaces) {
             for (DomainInterface.InterfaceAddress addr : domainInterface.addrs) {
                 if (addr.address instanceof Inet4Address) {
@@ -155,38 +163,63 @@ public class DomainManager {
         return ipAddresses;
     }
 
-    public VirtualMachineState getDomainState(Domain domain) throws LibvirtException {
-        return switch (domain.getInfo().state) {
-            case VIR_DOMAIN_RUNNING -> VirtualMachineState.RUNNING;
-            case VIR_DOMAIN_PAUSED -> VirtualMachineState.STOPPED;
-            case VIR_DOMAIN_SHUTDOWN -> VirtualMachineState.SHUTDOWN;
-            case VIR_DOMAIN_CRASHED -> VirtualMachineState.CRASHED;
-            default -> VirtualMachineState.UNKNOWN;
-        };
-    }
-
-    public VirtualMachineState getDomainStateById(String id) throws LibvirtException {
-        Domain domain = hypervisorConn.domainLookupByName(id);
-        return getDomainState(domain);
-    }
-
-    public void deleteDomain(Domain domain) throws LibvirtException {
-        domain.destroy();
-        domain.undefine();
-    }
-
-    public void deleteDomain(String id) throws LibvirtException {
-        Domain domain = hypervisorConn.domainLookupByName(id);
-        deleteDomain(domain);
-    }
-
-    public void shutdownDomain(Domain domain) throws LibvirtException {
-        if (domain.isActive() == 1) {
-            shutdownDomain(domain);
+    public VirtualMachineState getDomainState(Domain domain) throws Exception {
+        try {
+            return switch (domain.getInfo().state) {
+                case VIR_DOMAIN_RUNNING -> VirtualMachineState.RUNNING;
+                case VIR_DOMAIN_PAUSED -> VirtualMachineState.STOPPED;
+                case VIR_DOMAIN_SHUTDOWN -> VirtualMachineState.SHUTDOWN;
+                case VIR_DOMAIN_CRASHED -> VirtualMachineState.CRASHED;
+                default -> VirtualMachineState.UNKNOWN;
+            };
+        } catch (Exception e) {
+            throw new Exception(MessageFormat.format("Failed to get domain state for domain \"{0}\".", domain.getName()), e);
         }
     }
-    public void shutdownDomain(String id) throws LibvirtException {
-        Domain domain = hypervisorConn.domainLookupByName(id);
+
+    public VirtualMachineState getDomainStateById(String id) throws Exception {
+        try {
+            Domain domain = hypervisorConn.domainLookupByName(id);
+            return getDomainState(domain);
+        } catch (Exception e) {
+            throw new Exception(MessageFormat.format("Failed to get domain state for domain \"{0}\".", id), e);
+        }
+    }
+
+    public void deleteDomain(Domain domain) throws Exception {
+        try {
+            domain.destroy();
+            domain.undefine();
+        } catch (Exception e) {
+            throw new Exception(MessageFormat.format("Failed to delete domain \"{0}\".", domain.getName()), e);
+        }
+    }
+
+    public void deleteDomain(String id) throws Exception {
+        try {
+            Domain domain = hypervisorConn.domainLookupByName(id);
+            deleteDomain(domain);
+        } catch (Exception e) {
+            throw new Exception(MessageFormat.format("Failed to delete domain \"{0}\".", id), e);
+        }
+    }
+
+    public void shutdownDomain(Domain domain) throws Exception {
+        try {
+            if (domain.isActive() == 1) {
+                shutdownDomain(domain);
+            }
+        } catch (Exception e) {
+            throw new Exception(MessageFormat.format("Failed to shutdown domain \"{0}\"", domain.getName()), e);
+        }
+    }
+    public void shutdownDomain(String id) throws Exception {
+        Domain domain = null;
+        try {
+            domain = hypervisorConn.domainLookupByName(id);
+        } catch (Exception e) {
+            throw new Exception(MessageFormat.format("Domain \"{0}\" may not exist.", id), e);
+        }
         shutdownDomain(domain);
     }
 }

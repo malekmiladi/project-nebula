@@ -7,17 +7,18 @@ import org.libvirt.*;
 
 import javax.xml.parsers.ParserConfigurationException;
 import javax.xml.transform.TransformerException;
+import java.text.MessageFormat;
 
 @Slf4j
 public class StorageManager {
 
     private final StoragePool storagePool;
 
-    StorageManager(Connect hypervisorConn, String defaultStoragePoolName) {
+    StorageManager(Connect hypervisorConn, String defaultStoragePoolName) throws Exception {
         storagePool = fetchDefaultStoragePool(hypervisorConn, defaultStoragePoolName);
     }
 
-    public StoragePool fetchDefaultStoragePool(Connect hypervisorConn, String defaultStoragePoolName) {
+    public StoragePool fetchDefaultStoragePool(Connect hypervisorConn, String defaultStoragePoolName) throws Exception {
         try {
             return hypervisorConn.storagePoolLookupByName(defaultStoragePoolName);
         } catch (LibvirtException exception) {
@@ -27,7 +28,7 @@ public class StorageManager {
         }
     }
 
-    private StoragePool createDefaultStoragePool(Connect hypervisorConn, String defaultStoragePoolName) {
+    private StoragePool createDefaultStoragePool(Connect hypervisorConn, String defaultStoragePoolName) throws Exception {
         String xmlDescription = "";
         try {
             XMLBuilder builder = new XMLBuilder("pool");
@@ -42,7 +43,7 @@ public class StorageManager {
                     .build();
         } catch (Exception exception) {
             log.error("Failed to define storage '{}' pool XML description: {}", defaultStoragePoolName, exception.getMessage());
-            return null;
+            throw new Exception(MessageFormat.format("Failed to create XML description for storage pool \"{0}\"", defaultStoragePoolName), exception);
         }
 
         try {
@@ -52,7 +53,7 @@ public class StorageManager {
             return storagePool;
         } catch (LibvirtException exception) {
             log.error("Failed to create storage pool '{}': {}", defaultStoragePoolName, exception.getMessage());
-            return null;
+            throw new Exception(MessageFormat.format("Failed to create storage pool \"{0}\". Verify that the application has the right system permissions.", defaultStoragePoolName), exception);
         }
     }
 
@@ -77,14 +78,22 @@ public class StorageManager {
                 .build();
     }
 
-    public StorageVol createVolume(String id, int size) throws ParserConfigurationException, TransformerException, LibvirtException {
-        String xmlDescription = createVolumeXMLDescription(id, size);
-        return storagePool.storageVolCreateXML(xmlDescription, 0);
+    public StorageVol createVolume(String id, int size) throws Exception {
+        try {
+            String xmlDescription = createVolumeXMLDescription(id, size);
+            return storagePool.storageVolCreateXML(xmlDescription, 0);
+        } catch (Exception exception) {
+            throw new Exception(MessageFormat.format("Failed to create new volume.\n{0}", exception.getMessage()), exception);
+        }
     }
 
-    public void deleteVolume(String id) throws LibvirtException {
-        StorageVol volume = storagePool.storageVolLookupByName(id);
-        volume.delete(0);
+    public void deleteVolume(String id) throws Exception {
+        try {
+            StorageVol volume = storagePool.storageVolLookupByName(id);
+            volume.delete(0);
+        } catch (LibvirtException exception) {
+            throw new Exception(MessageFormat.format("Failed to delete volume \"{0}\"", exception.getMessage()), exception);
+        }
     }
 
     public void uploadImageToVolume(ImageSource source, String url, Stream fileStream, StorageVol volume) throws Exception {
@@ -92,7 +101,11 @@ public class StorageManager {
                 new LocalImageStrategy() :
                 new OnlineImageStrategy();
         ImageProvider imageProvider = new ImageProvider(downloadStrategy);
-        imageProvider.writeImageToVolume(url, fileStream, volume);
+        try {
+            imageProvider.writeImageToVolume(url, fileStream, volume);
+        } catch (Exception e) {
+            throw new Exception(MessageFormat.format("Failed to upload image \"{0}\" to volume \"{1}\"", url, volume.getName()), e);
+        }
     }
 
 }
