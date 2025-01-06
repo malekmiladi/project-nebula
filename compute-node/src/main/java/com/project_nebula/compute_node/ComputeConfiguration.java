@@ -19,6 +19,7 @@ public class ComputeConfiguration {
 
     private String id;
     private String idFilePath;
+    private String hypervisorType;
     private String hyperVisorConnectionURI;
     private String cloudDatasourceUri;
     private String storagePoolName;
@@ -38,6 +39,11 @@ public class ComputeConfiguration {
     @Value("${project-nebula.compute-node.service.id.file}")
     private void setIdFilePath(String idFilePath) {
         this.idFilePath = idFilePath;
+    }
+
+    @Value("${project-nebula.compute-node.hypervisor.type}")
+    private void setHypervisorType(String hypervisorType) {
+        this.hypervisorType = hypervisorType;
     }
 
     @Value("${project-nebula.compute-node.hypervisor.kvm.connection.uri}")

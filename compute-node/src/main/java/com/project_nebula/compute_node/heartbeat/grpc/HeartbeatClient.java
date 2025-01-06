@@ -9,13 +9,13 @@ import io.grpc.ManagedChannelBuilder;
 
 import java.time.Instant;
 
-public class HeartbeatGrpcClient {
+public class HeartbeatClient {
 
     private final HeartbeatServiceGrpc.HeartbeatServiceBlockingStub blockingStub;
     private final CallCredentials callCredentials;
     private final ComputeConfiguration conf;
 
-    public HeartbeatGrpcClient(ComputeConfiguration conf, CallCredentials callCredentials) {
+    public HeartbeatClient(ComputeConfiguration conf, CallCredentials callCredentials) {
         this.conf = conf;
         this.callCredentials = callCredentials;
         ManagedChannelBuilder<?> channelBuilder = ManagedChannelBuilder

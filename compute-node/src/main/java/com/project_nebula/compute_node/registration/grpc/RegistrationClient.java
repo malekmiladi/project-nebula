@@ -8,13 +8,13 @@ import io.grpc.CallCredentials;
 import io.grpc.ManagedChannel;
 import io.grpc.ManagedChannelBuilder;
 
-public class RegistrationGrpcClient {
+public class RegistrationClient {
 
     private final OrchestratorRegistrationGrpc.OrchestratorRegistrationBlockingStub blockingStub;
     private final CallCredentials callCredentials;
     private final ComputeConfiguration conf;
 
-    public RegistrationGrpcClient(ComputeConfiguration conf, CallCredentials callCredentials) {
+    public RegistrationClient(ComputeConfiguration conf, CallCredentials callCredentials) {
         this.conf = conf;
         this.callCredentials = callCredentials;
         ManagedChannelBuilder<?> channelBuilder = ManagedChannelBuilder

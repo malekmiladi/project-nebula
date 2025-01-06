@@ -1,0 +1,55 @@
+syntax = "proto3";
+option java_multiple_files = true;
+option java_package = "com.project_nebula.compute_node.grpc.virtual_machine_ops.proto";
+
+message AuthCredentials {
+  string token = 1;
+}
+
+message Image {
+  string url = 1;
+  int32 source = 2;
+}
+
+message Specs {
+  string id = 1;
+  string name = 2;
+  int32 cpus = 3;
+  int64 memory = 4;
+  int32 storage = 5;
+  Image image = 6;
+}
+
+message VirtualMachine {
+  Specs specs = 1;
+  Image image = 2;
+  AuthCredentials authCredentials = 3;
+}
+
+message VirtualMachineMetadata {
+  string ipv4 = 1;
+  string ipv6 = 2;
+  int32 state = 3;
+}
+
+message VirtualMachineOperationError {
+  int32 type = 1;
+  string message = 2;
+}
+
+message VirtualMachineOperationResult {
+  bool success = 1;
+  oneof result {
+    VirtualMachineOperationError error = 2;
+    VirtualMachineMetadata metadata = 3;
+  }
+}
+
+service VirtualMachineOperations {
+  rpc createVM(VirtualMachine) returns (VirtualMachineOperationResult);
+  rpc deleteVM(VirtualMachine) returns (VirtualMachineOperationResult);
+  rpc startVM(VirtualMachine) returns (VirtualMachineOperationResult);
+  rpc stopVM(VirtualMachine) returns (VirtualMachineOperationResult);
+  rpc restartVM(VirtualMachine) returns (VirtualMachineOperationResult);
+}
+

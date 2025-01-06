@@ -2,7 +2,7 @@ package com.project_nebula.compute_node.registration;
 
 import com.project_nebula.compute_node.ComputeConfiguration;
 import com.project_nebula.compute_node.grpc.orchestrator_registration.proto.RegistrationAcknowledge;
-import com.project_nebula.compute_node.registration.grpc.RegistrationGrpcClient;
+import com.project_nebula.compute_node.registration.grpc.RegistrationClient;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.boot.CommandLineRunner;
 import org.springframework.stereotype.Service;
@@ -13,12 +13,12 @@ import java.time.Duration;
 @Slf4j
 public class RegistrationService implements CommandLineRunner {
 
-    private final RegistrationGrpcClient registrationGrpcClient;
+    private final RegistrationClient registrationClient;
     private final ComputeConfiguration conf;
 
     public RegistrationService(ComputeConfiguration conf) {
         this.conf = conf;
-        this.registrationGrpcClient = new RegistrationGrpcClient(conf, null);
+        this.registrationClient = new RegistrationClient(conf, null);
     }
 
     @Override
@@ -29,7 +29,7 @@ public class RegistrationService implements CommandLineRunner {
     private void registerServer() throws Exception {
         boolean registered = false;
         while (!registered) {
-            RegistrationAcknowledge registrationResponse = registrationGrpcClient.registerComputeNode();
+            RegistrationAcknowledge registrationResponse = registrationClient.registerComputeNode();
             if (registrationResponse.getAck()) {
                 conf.setNewId(registrationResponse.getId());
                 registered = true;
