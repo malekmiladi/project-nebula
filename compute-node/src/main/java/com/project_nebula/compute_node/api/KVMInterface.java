@@ -32,7 +32,7 @@ public class KVMInterface implements HypervisorInterface {
 
     @Override
     public Result<VirtualMachineMetadata> startVM(String id) {
-        return facade.startVirtualMachine(id);
+        return facade.restartVirtualMachine(id);
     }
 
     @Override

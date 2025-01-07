@@ -235,9 +235,10 @@ public class DomainManager {
         }
     }
 
-    public void restartDomain(String id) throws Exception {
+    public Domain restartDomain(String id) throws Exception {
         Domain domain = getDomainById(id);
         restartDomain(domain);
+        return domain;
     }
 
 }

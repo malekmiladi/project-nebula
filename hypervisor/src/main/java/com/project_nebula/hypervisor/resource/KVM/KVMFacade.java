@@ -114,16 +114,10 @@ public class KVMFacade {
 
     public Result<VirtualMachineMetadata> restartVirtualMachine(String id) {
         try {
-            domainManager.restartDomain(id);
-            return Result.success(null);
-        } catch (Exception e) {
-            return Result.failure(e);
-        }
-    }
-
-    public Result<VirtualMachineMetadata> startVirtualMachine(String id) {
-        try {
-            domainManager.restartDomain(id);
+            Domain domain = domainManager.restartDomain(id);
+            HashMap<String, String> ipAddresses = domainManager.awaitForIpAssignment(domain);
+            VirtualMachineState state = domainManager.getDomainState(domain);
+            return Result.success(new VirtualMachineMetadata(state, ipAddresses));
         } catch (Exception e) {
             return Result.failure(e);
         }
