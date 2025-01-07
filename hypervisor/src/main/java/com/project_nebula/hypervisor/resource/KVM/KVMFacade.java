@@ -38,6 +38,7 @@ public class KVMFacade {
     }
 
     public Result<VirtualMachineMetadata> createVirtualMachine(String id, VirtualMachineSpecs specs, ImageMetadata image, String cloudDatasource) {
+        log.info("Creating virtual machine with id \"{}\" and specs [{} vCPUs] [{} vMEMORY] [{} vDISK]", id, specs.getVCpus(), specs.getVRamGb(), specs.getVDiskGb());
         StorageVol newVolume = null;
         Domain newDomain = null;
         HashMap<String, String> ipAddresses = null;

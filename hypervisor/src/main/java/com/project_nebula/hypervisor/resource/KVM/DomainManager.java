@@ -33,7 +33,7 @@ public class DomainManager {
                 .addChild("name")
                 .setText(id)
                 .stepBack(1)
-                .addChild("vRam")
+                .addChild("memory")
                 .setAttribute("unit", "G")
                 .setText(String.valueOf(specs.getVRamGb()))
                 .stepBack(1)
@@ -50,7 +50,7 @@ public class DomainManager {
                 .addChild("system")
                 .addChild("entry")
                 .setAttribute("name", "serial")
-                .setText("ds=nocloud;s=" + cloudDataSource)
+                .setText("ds=nocloud;s=" + cloudDataSource + id + "/")
                 .stepBack(3)
                 .addChild("os")
                 .addChild("type")
@@ -83,7 +83,7 @@ public class DomainManager {
                 .setAttribute("type", "qcow2")
                 .stepBack(1)
                 .addChild("source")
-                .setAttribute("file", "/var/lib/libvirt/images/" + id + ".qcow2")
+                .setAttribute("file", "/var/project-nebula/storage/" + id + ".qcow2")
                 .stepBack(1)
                 .addChild("target")
                 .setAttribute("dev", "vda")
@@ -143,7 +143,7 @@ public class DomainManager {
 
     public HashMap<String, String> awaitForIpAssignment(Domain domain) throws Exception {
         HashMap<String, String> ipAddresses = new HashMap<>();
-        Collection<DomainInterface> interfaces = new ArrayList<>();
+        Collection<DomainInterface> interfaces;
         do {
             try {
                 interfaces = domain.interfaceAddresses(Domain.InterfaceAddressesSource.VIR_DOMAIN_INTERFACE_ADDRESSES_SRC_LEASE, 0);

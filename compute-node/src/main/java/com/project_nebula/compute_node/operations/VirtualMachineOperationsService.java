@@ -10,11 +10,11 @@ import com.project_nebula.hypervisor.resource.image.ImageMetadata;
 import com.project_nebula.hypervisor.resource.image.ImageSource;
 import com.project_nebula.hypervisor.utils.Result;
 import io.grpc.stub.StreamObserver;
-import lombok.extern.log4j.Log4j2;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 
+@Slf4j
 @Service
-@Log4j2
 public class VirtualMachineOperationsService extends VirtualMachineOperationsGrpc.VirtualMachineOperationsImplBase {
 
     HypervisorInterface hypervisorInterface;

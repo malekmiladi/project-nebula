@@ -2,6 +2,7 @@ package com.project_nebula.compute_node.registration;
 
 import com.project_nebula.compute_node.ComputeConfiguration;
 import com.project_nebula.compute_node.grpc.orchestrator_registration.proto.RegistrationAcknowledge;
+import lombok.extern.log4j.Log4j2;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.boot.CommandLineRunner;
 import org.springframework.stereotype.Service;
@@ -22,7 +23,11 @@ public class RegistrationService implements CommandLineRunner {
 
     @Override
     public void run(String... args) throws Exception {
-        registerServer();
+        log.info("Registering compute node at '{}'", conf.getGrpcServerHostname() + ":" + conf.getGrpcServerPort());
+        log.info("Compute node specs: [{} vCPUS] [{}GB vRAM] [{}GB vDISK]", conf.getSpareCpus(), conf.getSpareMemory(), conf.getSpareStorage());
+        log.info("Virtual Machine Cloud Data Source: {}", conf.getCloudDatasourceUri());
+        log.info("gRPC TLS enable: {}", conf.isGrpcServerTLSEnable());
+        //registerServer();
     }
 
     private void registerServer() throws Exception {

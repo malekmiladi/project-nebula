@@ -3,11 +3,12 @@ package com.project_nebula.compute_node.heartbeat;
 import com.project_nebula.compute_node.ComputeConfiguration;
 import com.project_nebula.compute_node.grpc.heartbeat.proto.HeartbeatServiceGrpc;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Service;
 
 @Service
 @Slf4j
-public class HeartbeatService extends HeartbeatServiceGrpc.HeartbeatServiceImplBase {
+public class HeartbeatService {
 
     private final HeartbeatClient heartbeatClient;
     private final ComputeConfiguration conf;
