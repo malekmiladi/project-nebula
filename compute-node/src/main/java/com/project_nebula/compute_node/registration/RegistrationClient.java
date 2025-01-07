@@ -1,4 +1,4 @@
-package com.project_nebula.compute_node.registration.grpc;
+package com.project_nebula.compute_node.registration;
 
 import com.project_nebula.compute_node.ComputeConfiguration;
 import com.project_nebula.compute_node.grpc.orchestrator_registration.proto.OrchestratorRegistrationGrpc;

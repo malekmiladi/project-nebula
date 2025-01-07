@@ -1,8 +1,7 @@
-package com.project_nebula.compute_node.heartbeat.grpc;
+package com.project_nebula.compute_node.heartbeat;
 
 import com.project_nebula.compute_node.ComputeConfiguration;
 import com.project_nebula.compute_node.grpc.heartbeat.proto.*;
-import com.project_nebula.compute_node.heartbeat.ComputeNodeStatus;
 import io.grpc.CallCredentials;
 import io.grpc.ManagedChannel;
 import io.grpc.ManagedChannelBuilder;

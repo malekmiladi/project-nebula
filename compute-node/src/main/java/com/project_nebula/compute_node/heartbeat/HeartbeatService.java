@@ -2,7 +2,6 @@ package com.project_nebula.compute_node.heartbeat;
 
 import com.project_nebula.compute_node.ComputeConfiguration;
 import com.project_nebula.compute_node.grpc.heartbeat.proto.HeartbeatServiceGrpc;
-import com.project_nebula.compute_node.heartbeat.grpc.HeartbeatClient;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 

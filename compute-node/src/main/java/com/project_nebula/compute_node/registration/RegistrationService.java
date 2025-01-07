@@ -2,7 +2,6 @@ package com.project_nebula.compute_node.registration;
 
 import com.project_nebula.compute_node.ComputeConfiguration;
 import com.project_nebula.compute_node.grpc.orchestrator_registration.proto.RegistrationAcknowledge;
-import com.project_nebula.compute_node.registration.grpc.RegistrationClient;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.boot.CommandLineRunner;
 import org.springframework.stereotype.Service;

@@ -6,27 +6,30 @@ message AuthCredentials {
   string token = 1;
 }
 
+enum ImageSource {
+  LOCAL = 0;
+  ONLINE = 1;
+}
+
 message Image {
   string url = 1;
-  int32 source = 2;
+  ImageSource source = 2;
 }
 
 message Specs {
-  string id = 1;
-  string name = 2;
-  int32 cpus = 3;
-  int64 memory = 4;
-  int32 storage = 5;
-  Image image = 6;
+  int32 cpus = 1;
+  int32 memory = 2;
+  int32 storage = 3;
 }
 
 message VirtualMachine {
-  Specs specs = 1;
-  Image image = 2;
-  AuthCredentials authCredentials = 3;
+  string id = 1;
+  Specs specs = 2;
+  Image image = 3;
+  AuthCredentials authCredentials = 4;
 }
 
-message VirtualMachineMetadata {
+message VirtualMachineMetadataDTO {
   string ipv4 = 1;
   string ipv6 = 2;
   int32 state = 3;
@@ -41,7 +44,7 @@ message VirtualMachineOperationResult {
   bool success = 1;
   oneof result {
     VirtualMachineOperationError error = 2;
-    VirtualMachineMetadata metadata = 3;
+    VirtualMachineMetadataDTO metadata = 3;
   }
 }
 

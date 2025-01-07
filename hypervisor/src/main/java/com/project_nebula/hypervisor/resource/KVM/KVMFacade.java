@@ -3,6 +3,7 @@ package com.project_nebula.hypervisor.resource.KVM;
 import com.project_nebula.hypervisor.resource.VirtualMachineMetadata;
 import com.project_nebula.hypervisor.resource.VirtualMachineSpecs;
 import com.project_nebula.hypervisor.resource.VirtualMachineState;
+import com.project_nebula.hypervisor.resource.image.ImageMetadata;
 import com.project_nebula.hypervisor.utils.Result;
 import lombok.extern.slf4j.Slf4j;
 import org.libvirt.*;
@@ -36,7 +37,7 @@ public class KVMFacade {
         }
     }
 
-    public Result<VirtualMachineMetadata> createVirtualMachine(String id, VirtualMachineSpecs specs, String cloudDatasource) {
+    public Result<VirtualMachineMetadata> createVirtualMachine(String id, VirtualMachineSpecs specs, ImageMetadata image, String cloudDatasource) {
         StorageVol newVolume = null;
         Domain newDomain = null;
         HashMap<String, String> ipAddresses = null;
@@ -44,8 +45,8 @@ public class KVMFacade {
         try {
             newVolume = storageManager.createVolume(id, specs.getVDiskGb());
             storageManager.uploadImageToVolume(
-                    specs.getImage().getSource(),
-                    specs.getImage().getUrl(),
+                    image.getSource(),
+                    image.getUrl(),
                     HYPERVISOR_CONNECTION.streamNew(0),
                     newVolume
             );
@@ -91,21 +92,38 @@ public class KVMFacade {
         }
     }
 
-    public Result<Boolean> deleteVirtualMachine(String id) {
+    public Result<VirtualMachineMetadata> deleteVirtualMachine(String id) {
         try {
             domainManager.shutdownDomain(id);
             storageManager.deleteVolume(id);
             domainManager.deleteDomain(id);
-            return Result.success(true);
+            return Result.success(null);
         } catch (Exception e) {
             return Result.failure(e);
         }
     }
 
-    public Result<Boolean> shutdownVirtualMachine(String id) {
+    public Result<VirtualMachineMetadata> stopVirtualMachine(String id) {
         try {
             domainManager.shutdownDomain(id);
-            return Result.success(true);
+            return Result.success(null);
+        } catch (Exception e) {
+            return Result.failure(e);
+        }
+    }
+
+    public Result<VirtualMachineMetadata> restartVirtualMachine(String id) {
+        try {
+            domainManager.restartDomain(id);
+            return Result.success(null);
+        } catch (Exception e) {
+            return Result.failure(e);
+        }
+    }
+
+    public Result<VirtualMachineMetadata> startVirtualMachine(String id) {
+        try {
+            domainManager.restartDomain(id);
         } catch (Exception e) {
             return Result.failure(e);
         }

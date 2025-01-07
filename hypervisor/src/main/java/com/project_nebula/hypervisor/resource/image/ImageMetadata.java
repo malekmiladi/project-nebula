@@ -9,7 +9,7 @@ import lombok.Setter;
 @Setter
 @AllArgsConstructor
 @NoArgsConstructor
-public class ImageInfo {
+public class ImageMetadata {
     private String url;
     private ImageSource source;
 }

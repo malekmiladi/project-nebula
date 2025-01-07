@@ -6,8 +6,8 @@ import com.project_nebula.hypervisor.utils.XMLBuilder;
 import lombok.extern.slf4j.Slf4j;
 import org.libvirt.Connect;
 import org.libvirt.Domain;
+import org.libvirt.Domain.RebootFlags;
 import org.libvirt.DomainInterface;
-import org.libvirt.LibvirtException;
 
 import javax.xml.parsers.ParserConfigurationException;
 import javax.xml.transform.TransformerException;
@@ -163,6 +163,14 @@ public class DomainManager {
         return ipAddresses;
     }
 
+    public Domain getDomainById(String id) throws Exception {
+        try {
+            return hypervisorConn.domainLookupByName(id);
+        } catch (Exception e) {
+            throw new Exception(MessageFormat.format("Domain \"{0}\" may not exist.", id), e);
+        }
+    }
+
     public VirtualMachineState getDomainState(Domain domain) throws Exception {
         try {
             return switch (domain.getInfo().state) {
@@ -179,7 +187,7 @@ public class DomainManager {
 
     public VirtualMachineState getDomainStateById(String id) throws Exception {
         try {
-            Domain domain = hypervisorConn.domainLookupByName(id);
+            Domain domain = getDomainById(id);
             return getDomainState(domain);
         } catch (Exception e) {
             throw new Exception(MessageFormat.format("Failed to get domain state for domain \"{0}\".", id), e);
@@ -197,7 +205,7 @@ public class DomainManager {
 
     public void deleteDomain(String id) throws Exception {
         try {
-            Domain domain = hypervisorConn.domainLookupByName(id);
+            Domain domain = getDomainById(id);
             deleteDomain(domain);
         } catch (Exception e) {
             throw new Exception(MessageFormat.format("Failed to delete domain \"{0}\".", id), e);
@@ -213,13 +221,23 @@ public class DomainManager {
             throw new Exception(MessageFormat.format("Failed to shutdown domain \"{0}\"", domain.getName()), e);
         }
     }
+
     public void shutdownDomain(String id) throws Exception {
-        Domain domain = null;
-        try {
-            domain = hypervisorConn.domainLookupByName(id);
-        } catch (Exception e) {
-            throw new Exception(MessageFormat.format("Domain \"{0}\" may not exist.", id), e);
-        }
+        Domain domain = getDomainById(id);
         shutdownDomain(domain);
     }
+
+    public void restartDomain(Domain domain) throws Exception {
+        try {
+            domain.reboot(RebootFlags.DEFAULT);
+        } catch (Exception e) {
+            throw new Exception(MessageFormat.format("Failed to reboot domain \"{0}\".", domain.getName()), e);
+        }
+    }
+
+    public void restartDomain(String id) throws Exception {
+        Domain domain = getDomainById(id);
+        restartDomain(domain);
+    }
+
 }
