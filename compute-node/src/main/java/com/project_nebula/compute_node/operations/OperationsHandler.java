@@ -20,18 +20,17 @@ public class OperationsHandler {
 
     private VirtualMachineOperationResult handleOperationSuccess(Result<VirtualMachineMetadata> opResult, Operation op) {
         VirtualMachineMetadataDTO metadata;
+        VirtualMachineOperationResult.Builder response = VirtualMachineOperationResult.newBuilder();
         if (op == Operation.CREATE || op == Operation.RESTART || op == Operation.START) {
             metadata = VirtualMachineMetadataDTO.newBuilder()
                     .setIpv4(opResult.getValue().getIpAddresses().get("ipv4"))
                     .setIpv6(opResult.getValue().getIpAddresses().get("ipv6"))
                     .setState(opResult.getValue().getState().ordinal())
                     .build();
-        } else {
-            metadata = null;
+            response.setMetadata(metadata);
         }
-        return VirtualMachineOperationResult.newBuilder()
+        return response
                 .setSuccess(true)
-                .setMetadata(metadata)
                 .build();
     }
 
