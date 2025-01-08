@@ -88,7 +88,7 @@ public class StorageManager {
         }
     }
 
-    private StorageVol getVolumeById(String id) throws Exception {
+    public StorageVol getVolumeById(String id) throws Exception {
         try {
             return storagePool.storageVolLookupByName(id + ".qcow2");
         } catch (Exception e) {
@@ -101,7 +101,15 @@ public class StorageManager {
             StorageVol volume = getVolumeById(id);
             volume.delete(0);
         } catch (LibvirtException exception) {
-            throw new Exception(MessageFormat.format("Failed to delete volume \"{0}\"", exception.getMessage()), exception);
+            throw new Exception(MessageFormat.format("Failed to delete volume \"{0}\".qcow2", id), exception);
+        }
+    }
+
+    public void deleteVolume(StorageVol volume) throws Exception {
+        try {
+            volume.delete(0);
+        } catch (Exception e) {
+            throw new Exception(MessageFormat.format("Failed to delete volume \"{0}\"", volume.getName()), e);
         }
     }
 

@@ -196,7 +196,7 @@ public class DomainManager {
 
     public void deleteDomain(Domain domain) throws Exception {
         try {
-            domain.destroy();
+            shutdownDomain(domain);
             domain.undefine();
         } catch (Exception e) {
             throw new Exception(MessageFormat.format("Failed to delete domain \"{0}\".", domain.getName()), e);
@@ -215,7 +215,7 @@ public class DomainManager {
     public void shutdownDomain(Domain domain) throws Exception {
         try {
             if (domain.isActive() == 1) {
-                shutdownDomain(domain);
+                domain.shutdown();
             }
         } catch (Exception e) {
             throw new Exception(MessageFormat.format("Failed to shutdown domain \"{0}\"", domain.getName()), e);
