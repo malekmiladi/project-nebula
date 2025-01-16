@@ -22,10 +22,14 @@ import java.util.HashMap;
 public class DomainManager {
 
     private final Connect hypervisorConn;
+    private final String defaultStoragePoolLocation;
+    private final String networkName;
     private final int INTERFACE_FETCH_MAX_TRIES = 15;
 
-    public DomainManager(Connect hypervisorConn) {
+    public DomainManager(Connect hypervisorConn, String defaultStoragePoolLocation, String networkName) {
         this.hypervisorConn = hypervisorConn;
+        this.defaultStoragePoolLocation = defaultStoragePoolLocation;
+        this.networkName = networkName;
     }
 
     public String createDomainXMLDescription(String id, VirtualMachineSpecs specs, String cloudDataSource) throws ParserConfigurationException, TransformerException, NullPointerException {
@@ -85,7 +89,7 @@ public class DomainManager {
                 .setAttribute("type", "qcow2")
                 .stepBack(1)
                 .addChild("source")
-                .setAttribute("file", "/var/lib/libvirt/images" + id + ".qcow2")
+                .setAttribute("file", defaultStoragePoolLocation + "/" + id + ".qcow2")
                 .stepBack(1)
                 .addChild("target")
                 .setAttribute("dev", "vda")
@@ -94,7 +98,7 @@ public class DomainManager {
                 .addChild("interface")
                 .setAttribute("type", "network")
                 .addChild("source")
-                .setAttribute("network", "default")
+                .setAttribute("network", networkName)
                 .stepBack(1)
                 .addChild("model")
                 .setAttribute("type", "virtio")
@@ -223,7 +227,7 @@ public class DomainManager {
         try {
             domain.destroy();
         } catch (Exception e) {
-            throw new DomainStopException(MessageFormat.format("Failed to shutdown domain \"{0}\"", getDomainName(domain)), e);
+            throw new DomainStopException(MessageFormat.format("Failed to force shutdown domain \"{0}\"", getDomainName(domain)), e);
         }
     }
 

@@ -1,6 +1,6 @@
 syntax = "proto3";
 option java_multiple_files = true;
-option java_package = "com.project_nebula.compute_node.grpc.virtual_machine_ops.proto";
+option java_package = "com.project_nebula.compute_node.grpc_common.virtual_machine_ops.proto";
 
 message AuthCredentials {
   string token = 1;

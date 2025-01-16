@@ -20,10 +20,10 @@ public class KVMFacade {
     private final StorageManager storageManager;
     private final NetworkManager networkManager;
 
-    public KVMFacade(String hyperVisorConnectionUri, String defaultStoragePoolName) throws Exception {
+    public KVMFacade(String hyperVisorConnectionUri, String defaultStoragePoolName, String defaultStoragePoolLocation, String networkName) throws Exception {
         HYPERVISOR_CONNECTION = connectToHypervisor(hyperVisorConnectionUri);
-        storageManager = new StorageManager(HYPERVISOR_CONNECTION, defaultStoragePoolName);
-        domainManager = new DomainManager(HYPERVISOR_CONNECTION);
+        storageManager = new StorageManager(HYPERVISOR_CONNECTION, defaultStoragePoolName, defaultStoragePoolLocation);
+        domainManager = new DomainManager(HYPERVISOR_CONNECTION, defaultStoragePoolLocation, networkName);
         networkManager = new NetworkManager(HYPERVISOR_CONNECTION);
     }
 

@@ -18,8 +18,10 @@ public class ComputeConfiguration {
     private String idFilePath;
     private String hypervisorType;
     private String hyperVisorConnectionURI;
+    private String networkName;
     private String cloudDatasourceUri;
     private String storagePoolName;
+    private String storagePoolLocation;
     private String grpcServerHostname;
     private int grpcServerPort;
     private boolean grpcServerTLSEnable;
@@ -53,9 +55,19 @@ public class ComputeConfiguration {
         this.cloudDatasourceUri = cloudDatasourceUri;
     }
 
-    @Value("${project-nebula.compute-node.hypervisor.storage-pool.default}")
+    @Value("${project-nebula.compute-node.hypervisor.storage-pool.default.name}")
     private void setStoragePoolName(String storagePoolName) {
         this.storagePoolName = storagePoolName;
+    }
+
+    @Value("${project-nebula.compute-node.hypervisor.network.name}")
+    private void setNetworkName(String networkName) {
+        this.networkName = networkName;
+    }
+
+    @Value("${project-nebula.compute-node.hypervisor.storage-pool.default.location}")
+    private void setStoragePoolLocation(String storagePoolLocation) {
+        this.storagePoolLocation = storagePoolLocation;
     }
 
     @Value("${project-nebula.compute-node.grpc.server.host}")

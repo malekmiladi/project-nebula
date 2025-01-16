@@ -1,7 +1,8 @@
-include ":hypervisor", ":compute-node"
+include ":hypervisor", ":compute-node", ":compute-orchestrator", ":grpc-common"
 
 project(':hypervisor').projectDir = file("hypervisor")
 project(':compute-node').projectDir = file("compute-node")
-
+project(':compute-orchestrator').projectDir = file("compute-orchestrator")
+project(":grpc-common").projectDir = file("grpc-common")
 
 rootProject.name = 'project-nebula'

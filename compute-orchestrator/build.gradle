@@ -2,6 +2,7 @@ plugins {
 	id 'java'
 	id 'org.springframework.boot' version '3.4.1'
 	id 'io.spring.dependency-management' version '1.1.7'
+	id 'com.google.protobuf' version '0.9.4'
 }
 
 group = 'com.project-nebula'
@@ -31,26 +32,21 @@ ext {
 
 dependencies {
 	implementation 'org.springframework.boot:spring-boot-starter-actuator'
+	implementation 'org.springframework.boot:spring-boot-starter-data-jpa'
+	implementation 'org.springframework.boot:spring-boot-starter-jdbc'
 	//implementation 'org.springframework.boot:spring-boot-starter-oauth2-client'
 	//implementation 'org.springframework.boot:spring-boot-starter-security'
 	implementation 'io.grpc:grpc-services'
-	implementation "org.springframework.grpc:spring-grpc-spring-boot-starter"
+	implementation 'org.springframework.grpc:spring-grpc-spring-boot-starter'
+	implementation 'org.springframework.kafka:spring-kafka'
 	compileOnly 'org.projectlombok:lombok'
 	developmentOnly 'org.springframework.boot:spring-boot-devtools'
-	annotationProcessor 'org.springframework.boot:spring-boot-configuration-processor'
+	runtimeOnly 'org.postgresql:postgresql'
 	annotationProcessor 'org.projectlombok:lombok'
 	testImplementation 'org.springframework.boot:spring-boot-starter-test'
 	testImplementation 'org.springframework.grpc:spring-grpc-test'
-	testImplementation 'org.springframework.security:spring-security-test'
+	testImplementation 'org.springframework.kafka:spring-kafka-test'
 	testRuntimeOnly 'org.junit.platform:junit-platform-launcher'
-	implementation "org.springframework.boot:spring-boot-starter-log4j2"
-	modules {
-		module("org.springframework.boot:spring-boot-starter-logging") {
-			replacedBy("org.springframework.boot:spring-boot-starter-log4j2", "Use Log4j2 instead of Logback")
-		}
-	}
-	implementation project(":hypervisor")
-	implementation project(":grpc-common")
 }
 
 dependencyManagement {
@@ -59,13 +55,25 @@ dependencyManagement {
 	}
 }
 
+protobuf {
+	protoc {
+		artifact = 'com.google.protobuf:protoc'
+	}
+	plugins {
+		grpc {
+			artifact = 'io.grpc:protoc-gen-grpc-java'
+		}
+	}
+	generateProtoTasks {
+		all()*.plugins {
+			grpc {
+				option 'jakarta_omit'
+				option '@generated=omit'
+			}
+		}
+	}
+}
 
 tasks.named('test') {
 	useJUnitPlatform()
-}
-
-bootRun {
-	jvmArgs = [
-			"-Dspring.config.additional-location=file:${projectDir}/../compute-node.properties,file:/etc/project-nebula/compute-node/id[.properties]"
-	]
 }

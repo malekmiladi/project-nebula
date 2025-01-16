@@ -2,7 +2,7 @@ package com.project_nebula.compute_node.operations;
 
 import com.project_nebula.compute_node.ComputeConfiguration;
 import com.project_nebula.compute_node.api.HypervisorInterfaceFactory;
-import com.project_nebula.compute_node.grpc.virtual_machine_ops.proto.*;
+import com.project_nebula.compute_node.grpc_common.virtual_machine_ops.proto.*;
 import com.project_nebula.hypervisor.HypervisorInterface;
 import com.project_nebula.hypervisor.resource.VirtualMachineMetadata;
 import com.project_nebula.hypervisor.resource.VirtualMachineSpecs;

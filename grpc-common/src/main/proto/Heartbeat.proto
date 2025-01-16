@@ -1,0 +1,28 @@
+syntax = "proto3";
+option java_multiple_files = true;
+option java_package = "com.project_nebula.compute_node.grpc_common.heartbeat.proto";
+
+message Timestamp {
+  int64 seconds = 1;
+  int32 nanos = 2;
+}
+
+message Status {
+  int32 code = 1;
+  string message = 2;
+}
+
+message Heartbeat {
+  string id = 1;
+  Timestamp timestamp = 2;
+  Status status = 3;
+}
+
+message HeartbeatAcknowledge {
+  bool ack = 1;
+  Timestamp timestamp = 2;
+}
+
+service HeartbeatService {
+  rpc sendHeartbeat(Heartbeat) returns (HeartbeatAcknowledge);
+}

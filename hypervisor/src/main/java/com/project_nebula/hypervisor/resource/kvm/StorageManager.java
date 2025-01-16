@@ -14,11 +14,11 @@ public class StorageManager {
 
     private final StoragePool storagePool;
 
-    StorageManager(Connect hypervisorConn, String defaultStoragePoolName) throws Exception {
-        storagePool = fetchDefaultStoragePool(hypervisorConn, defaultStoragePoolName);
+    StorageManager(Connect hypervisorConn, String defaultStoragePoolName, String defaultStoragePoolLocation) throws Exception {
+        storagePool = fetchDefaultStoragePool(hypervisorConn, defaultStoragePoolName, defaultStoragePoolLocation);
     }
 
-    public StoragePool fetchDefaultStoragePool(Connect hypervisorConn, String defaultStoragePoolName) throws Exception {
+    public StoragePool fetchDefaultStoragePool(Connect hypervisorConn, String defaultStoragePoolName, String defaultStoragePoolLocation) throws Exception {
         try {
             StoragePool defaultStoragePool = hypervisorConn.storagePoolLookupByName(defaultStoragePoolName);
             log.info("Found default storage pool: {}", defaultStoragePoolName);
@@ -26,11 +26,11 @@ public class StorageManager {
         } catch (LibvirtException exception) {
             log.warn("Could not find storage pool '{}': {}", defaultStoragePoolName, exception.getMessage());
             log.info("Creating storage pool '{}'", defaultStoragePoolName);
-            return createDefaultStoragePool(hypervisorConn, defaultStoragePoolName);
+            return createDefaultStoragePool(hypervisorConn, defaultStoragePoolName, defaultStoragePoolLocation);
         }
     }
 
-    private StoragePool createDefaultStoragePool(Connect hypervisorConn, String defaultStoragePoolName) throws Exception {
+    private StoragePool createDefaultStoragePool(Connect hypervisorConn, String defaultStoragePoolName, String defaultStoragePoolLocation) throws Exception {
         String xmlDescription = "";
         try {
             XMLBuilder builder = new XMLBuilder("pool");
@@ -41,7 +41,7 @@ public class StorageManager {
                     .stepBack(1)
                     .addChild("target")
                     .addChild("path")
-                    .setText("/var/project-nebula/storage")
+                    .setText(defaultStoragePoolLocation)
                     .build();
         } catch (Exception exception) {
             throw new Exception(MessageFormat.format("Failed to create XML description for storage pool \"{0}\"", defaultStoragePoolName), exception);

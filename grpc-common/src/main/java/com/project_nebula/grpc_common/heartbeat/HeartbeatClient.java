@@ -1,7 +1,7 @@
-package com.project_nebula.compute_node.heartbeat;
+package com.project_nebula.grpc_common.heartbeat;
 
-import com.project_nebula.compute_node.ComputeConfiguration;
-import com.project_nebula.compute_node.grpc.heartbeat.proto.*;
+import com.project_nebula.grpc_common.GRPCClientConfiguration;
+import com.project_nebula.compute_node.grpc_common.heartbeat.proto.*;
 import io.grpc.CallCredentials;
 import io.grpc.ManagedChannel;
 import io.grpc.ManagedChannelBuilder;
@@ -9,17 +9,16 @@ import io.grpc.ManagedChannelBuilder;
 import java.time.Instant;
 
 public class HeartbeatClient {
-
     private final HeartbeatServiceGrpc.HeartbeatServiceBlockingStub blockingStub;
     private final CallCredentials callCredentials;
-    private final ComputeConfiguration conf;
+    private final GRPCClientConfiguration conf;
 
-    public HeartbeatClient(ComputeConfiguration conf, CallCredentials callCredentials) {
+    public HeartbeatClient(GRPCClientConfiguration conf, CallCredentials callCredentials) {
         this.conf = conf;
         this.callCredentials = callCredentials;
         ManagedChannelBuilder<?> channelBuilder = ManagedChannelBuilder
-                .forAddress(conf.getGrpcServerHostname(), conf.getGrpcServerPort());
-        if (!conf.isGrpcServerTLSEnable()) {
+                .forAddress(conf.getHostname(), conf.getPort());
+        if (!conf.isTlsEnable()) {
             channelBuilder.usePlaintext();
         }
         ManagedChannel channel = channelBuilder.build();
@@ -28,7 +27,7 @@ public class HeartbeatClient {
 
     private Heartbeat createNewHeartbeat() {
         Status status = Status.newBuilder()
-                .setCode(ComputeNodeStatus.OK.ordinal())
+                .setCode(ClientStatus.OK.ordinal())
                 .setMessage("Ping")
                 .build();
         Timestamp timestamp = Timestamp.newBuilder()
@@ -45,12 +44,15 @@ public class HeartbeatClient {
     public boolean sendHeartBeat() {
         Heartbeat heartbeat = createNewHeartbeat();
         HeartbeatAcknowledge heartbeatAcknowledge;
-        if (conf.isGrpcServerTLSEnable()) {
-            heartbeatAcknowledge = blockingStub.withCallCredentials(callCredentials).sendHeartbeat(heartbeat);
+        if (conf.isTlsEnable()) {
+            return blockingStub
+                    .withCallCredentials(callCredentials)
+                    .sendHeartbeat(heartbeat)
+                    .getAck();
         } else {
-            heartbeatAcknowledge = blockingStub.sendHeartbeat(heartbeat);
+            return blockingStub
+                    .sendHeartbeat(heartbeat)
+                    .getAck();
         }
-        return heartbeatAcknowledge.getAck();
     }
-
 }

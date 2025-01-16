@@ -30,9 +30,19 @@
       "description": "Compute Node available hypervisor."
     },
     {
-      "name": "project-nebula.compute-node.hypervisor.storage-pool.default",
+      "name": "project-nebula.compute-node.hypervisor.network.name",
+      "type": "java.lang.String",
+      "description": "Compute Node network name."
+    },
+    {
+      "name": "project-nebula.compute-node.hypervisor.storage-pool.default.name",
       "type": "java.lang.String",
       "description": "Compute Node default storage pool name."
+    },
+    {
+      "name": "project-nebula.compute-node.hypervisor.storage-pool.default.location",
+      "type": "java.lang.String",
+      "description": "Compute Node default storage pool images location."
     },
     {
       "name": "project-nebula.compute-node.grpc.server.url",
