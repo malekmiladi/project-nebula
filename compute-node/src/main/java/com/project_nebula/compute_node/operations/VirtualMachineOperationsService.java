@@ -35,7 +35,7 @@ public class VirtualMachineOperationsService extends VirtualMachineOperationsGrp
         Image image = vm.getImage();
         ImageSource source = image.getSource().getNumber() == 0 ? ImageSource.LOCAL : ImageSource.ONLINE;
 
-        log.info("Creating virtual machine: '{}' with '{}' vCPUs, '{}' vRAM, '{}' vDISK.\nUsing image from url '{}'.", vm.getId(), specs.getCpus(), specs.getMemory(), specs.getStorage(), image.getUrl());
+        log.info("Creating virtual machine { id: {}, cpus: {}, memory: {}GB, disk: {}GB, image: { source: {}, url: {} } }", vm.getId(), specs.getCpus(), specs.getMemory(), specs.getStorage(), source.name(), image.getUrl());
 
         Result<VirtualMachineMetadata> opResult = hypervisorInterface.createVM(
                 vm.getId(),
@@ -51,7 +51,7 @@ public class VirtualMachineOperationsService extends VirtualMachineOperationsGrp
 
     @Override
     public void deleteVM(VirtualMachine vm, StreamObserver<VirtualMachineOperationResult> responseObserver) {
-        log.info("Deleting virtual machine: '{}'", vm.getId());
+        log.info("Deleting virtual machine \"{}\"", vm.getId());
         Result<VirtualMachineMetadata> opResult = hypervisorInterface.deleteVM(vm.getId());
         VirtualMachineOperationResult response = operationsHandler.handleOperationResult(opResult, Operation.DELETE);
         responseObserver.onNext(response);
@@ -60,7 +60,7 @@ public class VirtualMachineOperationsService extends VirtualMachineOperationsGrp
 
     @Override
     public void stopVM(VirtualMachine vm, StreamObserver<VirtualMachineOperationResult> responseObserver) {
-        log.info("Stopping virtual machine: '{}'", vm.getId());
+        log.info("Stopping virtual machine \"{}\"", vm.getId());
         Result<VirtualMachineMetadata> opResult = hypervisorInterface.stopVM(vm.getId());
         VirtualMachineOperationResult response = operationsHandler.handleOperationResult(opResult, Operation.STOP);
         responseObserver.onNext(response);
@@ -69,7 +69,7 @@ public class VirtualMachineOperationsService extends VirtualMachineOperationsGrp
 
     @Override
     public void restartVM(VirtualMachine vm, StreamObserver<VirtualMachineOperationResult> responseObserver) {
-        log.info("Restarting virtual machine: '{}'", vm.getId());
+        log.info("Restarting virtual machine \"{}\"", vm.getId());
         Result<VirtualMachineMetadata> opResult = hypervisorInterface.restartVM(vm.getId());
         VirtualMachineOperationResult response = operationsHandler.handleOperationResult(opResult, Operation.RESTART);
         responseObserver.onNext(response);
@@ -78,7 +78,7 @@ public class VirtualMachineOperationsService extends VirtualMachineOperationsGrp
 
     @Override
     public void startVM(VirtualMachine vm, StreamObserver<VirtualMachineOperationResult> responseObserver) {
-        log.info("Starting virtual machine: '{}'", vm.getId());
+        log.info("Starting virtual machine \"{}\"", vm.getId());
         Result<VirtualMachineMetadata> opResult = hypervisorInterface.startVM(vm.getId());
         VirtualMachineOperationResult response = operationsHandler.handleOperationResult(opResult, Operation.START);
         responseObserver.onNext(response);
