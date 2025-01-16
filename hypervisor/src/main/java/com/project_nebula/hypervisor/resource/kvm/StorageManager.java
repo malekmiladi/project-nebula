@@ -1,7 +1,11 @@
 package com.project_nebula.hypervisor.resource.kvm;
 
-import com.project_nebula.hypervisor.resource.image.*;
+import com.project_nebula.hypervisor.resource.image.ImageDownloadStrategy;
+import com.project_nebula.hypervisor.resource.image.ImageProvider;
+import com.project_nebula.hypervisor.resource.image.LocalImageStrategy;
+import com.project_nebula.hypervisor.resource.image.OnlineImageStrategy;
 import com.project_nebula.hypervisor.utils.XMLBuilder;
+import com.project_nebula.shared.resource.image.Source;
 import lombok.extern.slf4j.Slf4j;
 import org.libvirt.*;
 
@@ -113,8 +117,8 @@ public class StorageManager {
         }
     }
 
-    public void uploadImageToVolume(ImageSource source, String url, Stream fileStream, StorageVol volume) throws Exception {
-        ImageDownloadStrategy downloadStrategy = source == ImageSource.LOCAL ?
+    public void uploadImageToVolume(Source source, String url, Stream fileStream, StorageVol volume) throws Exception {
+        ImageDownloadStrategy downloadStrategy = source == Source.LOCAL ?
                 new LocalImageStrategy() :
                 new OnlineImageStrategy();
         ImageProvider imageProvider = new ImageProvider(downloadStrategy);

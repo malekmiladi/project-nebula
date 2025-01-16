@@ -31,6 +31,7 @@ dependencies {
 
     implementation group: 'org.libvirt', name: 'libvirt', version: '0.5.3'
     implementation group: 'net.java.dev.jna', name: 'jna', version: '5.16.0'
+    implementation project(":shared")
 }
 
 test {

@@ -1,9 +1,9 @@
 package com.project_nebula.hypervisor;
 
-import com.project_nebula.hypervisor.resource.VirtualMachineMetadata;
-import com.project_nebula.hypervisor.resource.VirtualMachineSpecs;
-import com.project_nebula.hypervisor.resource.image.ImageMetadata;
 import com.project_nebula.hypervisor.utils.Result;
+import com.project_nebula.shared.resource.VirtualMachineMetadata;
+import com.project_nebula.shared.resource.VirtualMachineSpecs;
+import com.project_nebula.shared.resource.image.ImageMetadata;
 
 public interface HypervisorInterface {
 

@@ -1,10 +1,10 @@
 package com.project_nebula.hypervisor.resource.kvm;
 
-import com.project_nebula.hypervisor.resource.VirtualMachineMetadata;
-import com.project_nebula.hypervisor.resource.VirtualMachineSpecs;
-import com.project_nebula.hypervisor.resource.VirtualMachineState;
-import com.project_nebula.hypervisor.resource.image.ImageMetadata;
 import com.project_nebula.hypervisor.utils.Result;
+import com.project_nebula.shared.resource.VirtualMachineMetadata;
+import com.project_nebula.shared.resource.VirtualMachineSpecs;
+import com.project_nebula.shared.resource.VirtualMachineState;
+import com.project_nebula.shared.resource.image.ImageMetadata;
 import lombok.extern.slf4j.Slf4j;
 import org.libvirt.*;
 import org.libvirt.Stream;

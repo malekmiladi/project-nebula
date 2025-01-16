@@ -1,6 +1,5 @@
-package com.project_nebula.hypervisor.resource;
+package com.project_nebula.shared.resource;
 
-import com.project_nebula.hypervisor.resource.image.ImageMetadata;
 import lombok.Getter;
 import lombok.RequiredArgsConstructor;
 import lombok.Setter;

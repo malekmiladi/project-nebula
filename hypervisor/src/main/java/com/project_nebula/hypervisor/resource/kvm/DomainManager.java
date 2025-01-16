@@ -1,9 +1,9 @@
 package com.project_nebula.hypervisor.resource.kvm;
 
 import com.project_nebula.hypervisor.resource.kvm.exceptions.*;
-import com.project_nebula.hypervisor.resource.VirtualMachineSpecs;
-import com.project_nebula.hypervisor.resource.VirtualMachineState;
 import com.project_nebula.hypervisor.utils.XMLBuilder;
+import com.project_nebula.shared.resource.VirtualMachineSpecs;
+import com.project_nebula.shared.resource.VirtualMachineState;
 import lombok.extern.slf4j.Slf4j;
 import org.libvirt.Connect;
 import org.libvirt.Domain;

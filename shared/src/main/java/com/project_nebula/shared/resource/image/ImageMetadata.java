@@ -1,4 +1,4 @@
-package com.project_nebula.hypervisor.resource.image;
+package com.project_nebula.shared.resource.image;
 
 import lombok.AllArgsConstructor;
 import lombok.Getter;
@@ -11,5 +11,5 @@ import lombok.Setter;
 @NoArgsConstructor
 public class ImageMetadata {
     private String url;
-    private ImageSource source;
+    private Source source;
 }

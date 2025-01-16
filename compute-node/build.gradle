@@ -51,6 +51,7 @@ dependencies {
 	}
 	implementation project(":hypervisor")
 	implementation project(":grpc-common")
+	implementation project(":shared")
 }
 
 dependencyManagement {

@@ -1,4 +1,4 @@
-package com.project_nebula.hypervisor.resource;
+package com.project_nebula.shared.resource;
 
 public enum VirtualMachineState {
     STARTED,
