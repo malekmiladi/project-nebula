@@ -1,9 +1,9 @@
 package com.project_nebula.grpc_common.virtual_machine_operations;
 
 import com.project_nebula.grpc_common.GRPCClientConfiguration;
-import com.project_nebula.compute_node.grpc_common.virtual_machine_ops.proto.VirtualMachine;
-import com.project_nebula.compute_node.grpc_common.virtual_machine_ops.proto.VirtualMachineOperationResult;
-import com.project_nebula.compute_node.grpc_common.virtual_machine_ops.proto.VirtualMachineOperationsGrpc;
+import com.project_nebula.grpc_common.virtual_machine_ops.proto.VirtualMachine;
+import com.project_nebula.grpc_common.virtual_machine_ops.proto.VirtualMachineOperationResult;
+import com.project_nebula.grpc_common.virtual_machine_ops.proto.VirtualMachineOperationsGrpc;
 import io.grpc.CallCredentials;
 import io.grpc.ManagedChannel;
 import io.grpc.ManagedChannelBuilder;

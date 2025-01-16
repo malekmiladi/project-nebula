@@ -1,7 +1,7 @@
 package com.project_nebula.grpc_common.heartbeat;
 
 import com.project_nebula.grpc_common.GRPCClientConfiguration;
-import com.project_nebula.compute_node.grpc_common.heartbeat.proto.*;
+import com.project_nebula.grpc_common.heartbeat.proto.*;
 import io.grpc.CallCredentials;
 import io.grpc.ManagedChannel;
 import io.grpc.ManagedChannelBuilder;

@@ -1,9 +1,9 @@
 package com.project_nebula.grpc_common.registration;
 
 import com.project_nebula.grpc_common.GRPCClientConfiguration;
-import com.project_nebula.compute_node.grpc_common.orchestrator_registration.proto.OrchestratorRegistrationGrpc;
-import com.project_nebula.compute_node.grpc_common.orchestrator_registration.proto.RegistrationAcknowledge;
-import com.project_nebula.compute_node.grpc_common.orchestrator_registration.proto.RegistrationParameters;
+import com.project_nebula.grpc_common.orchestrator_registration.proto.OrchestratorRegistrationGrpc;
+import com.project_nebula.grpc_common.orchestrator_registration.proto.RegistrationAcknowledge;
+import com.project_nebula.grpc_common.orchestrator_registration.proto.RegistrationParameters;
 import io.grpc.CallCredentials;
 import io.grpc.ManagedChannel;
 import io.grpc.ManagedChannelBuilder;

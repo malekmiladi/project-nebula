@@ -1,7 +1,7 @@
 package com.project_nebula.compute_node.registration;
 
 import com.project_nebula.compute_node.ComputeConfiguration;
-import com.project_nebula.compute_node.grpc_common.orchestrator_registration.proto.RegistrationAcknowledge;
+import com.project_nebula.grpc_common.orchestrator_registration.proto.RegistrationAcknowledge;
 import com.project_nebula.grpc_common.registration.ComputeNodeMetadata;
 import com.project_nebula.grpc_common.GRPCClientConfiguration;
 import com.project_nebula.grpc_common.registration.RegistrationClient;

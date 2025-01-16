@@ -1,8 +1,8 @@
 package com.project_nebula.compute_node.operations;
 
-import com.project_nebula.compute_node.grpc_common.virtual_machine_ops.proto.VirtualMachineMetadataDTO;
-import com.project_nebula.compute_node.grpc_common.virtual_machine_ops.proto.VirtualMachineOperationError;
-import com.project_nebula.compute_node.grpc_common.virtual_machine_ops.proto.VirtualMachineOperationResult;
+import com.project_nebula.grpc_common.virtual_machine_ops.proto.VirtualMachineMetadataDTO;
+import com.project_nebula.grpc_common.virtual_machine_ops.proto.VirtualMachineOperationError;
+import com.project_nebula.grpc_common.virtual_machine_ops.proto.VirtualMachineOperationResult;
 import com.project_nebula.hypervisor.resource.VirtualMachineMetadata;
 import com.project_nebula.hypervisor.utils.Result;
 import org.springframework.stereotype.Service;
