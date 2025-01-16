@@ -1,5 +1,6 @@
 package com.project_nebula.hypervisor.resource.KVM;
 
+import com.project_nebula.hypervisor.resource.KVM.exceptions.*;
 import com.project_nebula.hypervisor.resource.VirtualMachineSpecs;
 import com.project_nebula.hypervisor.resource.VirtualMachineState;
 import com.project_nebula.hypervisor.utils.XMLBuilder;
@@ -8,19 +9,21 @@ import org.libvirt.Connect;
 import org.libvirt.Domain;
 import org.libvirt.Domain.RebootFlags;
 import org.libvirt.DomainInterface;
+import org.libvirt.LibvirtException;
 
 import javax.xml.parsers.ParserConfigurationException;
 import javax.xml.transform.TransformerException;
 import java.net.Inet4Address;
 import java.net.Inet6Address;
 import java.text.MessageFormat;
-import java.util.ArrayList;
 import java.util.Collection;
 import java.util.HashMap;
 
 @Slf4j
 public class DomainManager {
+
     private final Connect hypervisorConn;
+    private final int INTERFACE_FETCH_MAX_TRIES = 15;
 
     public DomainManager(Connect hypervisorConn) {
         this.hypervisorConn = hypervisorConn;
@@ -83,7 +86,7 @@ public class DomainManager {
                 .setAttribute("type", "qcow2")
                 .stepBack(1)
                 .addChild("source")
-                .setAttribute("file", "/var/project-nebula/storage/" + id + ".qcow2")
+                .setAttribute("file", "/var/lib/libvirt/images" + id + ".qcow2")
                 .stepBack(1)
                 .addChild("target")
                 .setAttribute("dev", "vda")
@@ -129,7 +132,7 @@ public class DomainManager {
                 .build();
     }
 
-    public Domain createDomain(String id, VirtualMachineSpecs specs, String cloudDataSource) throws Exception {
+    public Domain createDomain(String id, VirtualMachineSpecs specs, String cloudDataSource) throws DomainCreateException {
         try {
             String domainXMLDescription = createDomainXMLDescription(id, specs, cloudDataSource);
             Domain domain = hypervisorConn.domainDefineXML(domainXMLDescription);
@@ -137,18 +140,18 @@ public class DomainManager {
             domain.create();
             return domain;
         } catch (Exception e) {
-            throw new Exception(MessageFormat.format("Failed to create domain with id:\"{0}\".\n{1}", id, e.getMessage()), e);
+            throw new DomainCreateException(MessageFormat.format("Failed to create domain ({0}). {1}", id, e.getMessage()), e);
         }
     }
 
-    public HashMap<String, String> awaitForIpAssignment(Domain domain) throws Exception {
+    public HashMap<String, String> awaitForIpAssignment(Domain domain) throws DomainInterfaceException {
         HashMap<String, String> ipAddresses = new HashMap<>();
         Collection<DomainInterface> interfaces;
         do {
             try {
                 interfaces = domain.interfaceAddresses(Domain.InterfaceAddressesSource.VIR_DOMAIN_INTERFACE_ADDRESSES_SRC_LEASE, 0);
             } catch (Exception e) {
-                throw new Exception(MessageFormat.format("Failed to fetch interfaces for domain \"{0}\".\n{1}", domain.getName(), e.getMessage()), e);
+                throw new DomainInterfaceException(MessageFormat.format("Failed to fetch interfaces for domain \"{0}\".\n{1}", getDomainName(domain), e.getMessage()), e);
             }
         } while (interfaces.isEmpty());
         for (DomainInterface domainInterface : interfaces) {
@@ -163,15 +166,15 @@ public class DomainManager {
         return ipAddresses;
     }
 
-    public Domain getDomainById(String id) throws Exception {
+    public Domain getDomainById(String id) throws DomainNotFoundException {
         try {
             return hypervisorConn.domainLookupByName(id);
         } catch (Exception e) {
-            throw new Exception(MessageFormat.format("Domain \"{0}\" may not exist.", id), e);
+            throw new DomainNotFoundException(MessageFormat.format("Domain \"{0}\" may not exist.", id), e);
         }
     }
 
-    public VirtualMachineState getDomainState(Domain domain) throws Exception {
+    public VirtualMachineState getDomainState(Domain domain) throws RuntimeException {
         try {
             return switch (domain.getInfo().state) {
                 case VIR_DOMAIN_RUNNING -> VirtualMachineState.RUNNING;
@@ -181,64 +184,75 @@ public class DomainManager {
                 default -> VirtualMachineState.UNKNOWN;
             };
         } catch (Exception e) {
-            throw new Exception(MessageFormat.format("Failed to get domain state for domain \"{0}\".", domain.getName()), e);
+            throw new RuntimeException(MessageFormat.format("Failed to get domain state for domain \"{0}\".", getDomainName(domain)), e);
         }
     }
 
-    public VirtualMachineState getDomainStateById(String id) throws Exception {
+    public VirtualMachineState getDomainStateById(String id) throws RuntimeException {
         try {
             Domain domain = getDomainById(id);
             return getDomainState(domain);
         } catch (Exception e) {
-            throw new Exception(MessageFormat.format("Failed to get domain state for domain \"{0}\".", id), e);
+            throw new RuntimeException(MessageFormat.format("Failed to get domain state for domain \"{0}\".", id), e);
         }
     }
 
-    public void deleteDomain(Domain domain) throws Exception {
+    public void deleteDomain(Domain domain) throws DomainDeleteException {
         try {
-            shutdownDomain(domain);
+            domain.getName();
+            shutdownDomain(domain, true);
             domain.undefine();
         } catch (Exception e) {
-            throw new Exception(MessageFormat.format("Failed to delete domain \"{0}\".", domain.getName()), e);
+            throw new DomainDeleteException(MessageFormat.format("Failed to delete domain \"{0}\".", getDomainName(domain)), e);
         }
     }
 
-    public void deleteDomain(String id) throws Exception {
-        try {
-            Domain domain = getDomainById(id);
-            deleteDomain(domain);
-        } catch (Exception e) {
-            throw new Exception(MessageFormat.format("Failed to delete domain \"{0}\".", id), e);
-        }
-    }
-
-    public void shutdownDomain(Domain domain) throws Exception {
+    public void shutdownDomain(Domain domain, boolean force) throws DomainStopException {
         try {
             if (domain.isActive() == 1) {
+                if (force) {
+                    destroyDomain(domain);
+                }
                 domain.shutdown();
             }
         } catch (Exception e) {
-            throw new Exception(MessageFormat.format("Failed to shutdown domain \"{0}\"", domain.getName()), e);
+            throw new DomainStopException(MessageFormat.format("Failed to shutdown domain \"{0}\"", getDomainName(domain)), e);
         }
     }
 
-    public void shutdownDomain(String id) throws Exception {
-        Domain domain = getDomainById(id);
-        shutdownDomain(domain);
+    public void destroyDomain(Domain domain) {
+        try {
+            domain.destroy();
+        } catch (Exception e) {
+            throw new DomainStopException(MessageFormat.format("Failed to shutdown domain \"{0}\"", getDomainName(domain)), e);
+        }
     }
 
-    public void restartDomain(Domain domain) throws Exception {
+    public void shutdownDomain(String id) throws DomainStopException {
+        Domain domain = getDomainById(id);
+        shutdownDomain(domain, false);
+    }
+
+    public void restartDomain(Domain domain) throws DomainRebootException {
         try {
             domain.reboot(RebootFlags.DEFAULT);
         } catch (Exception e) {
-            throw new Exception(MessageFormat.format("Failed to reboot domain \"{0}\".", domain.getName()), e);
+            throw new DomainRebootException(MessageFormat.format("Failed to reboot domain \"{0}\".", getDomainName(domain)), e);
         }
     }
 
-    public Domain restartDomain(String id) throws Exception {
+    public Domain restartDomain(String id) throws DomainRebootException {
         Domain domain = getDomainById(id);
         restartDomain(domain);
         return domain;
+    }
+
+    public String getDomainName(Domain domain) throws DomainNotFoundException {
+        try {
+            return domain.getName();
+        } catch (Exception e) {
+            throw new DomainNotFoundException("Can't retrieve domain name.");
+        }
     }
 
 }

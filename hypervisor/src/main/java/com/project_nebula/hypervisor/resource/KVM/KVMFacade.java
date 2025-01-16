@@ -7,8 +7,8 @@ import com.project_nebula.hypervisor.resource.image.ImageMetadata;
 import com.project_nebula.hypervisor.utils.Result;
 import lombok.extern.slf4j.Slf4j;
 import org.libvirt.*;
+import org.libvirt.Stream;
 
-import java.text.MessageFormat;
 import java.util.HashMap;
 
 @Slf4j
@@ -39,7 +39,7 @@ public class KVMFacade {
     }
 
     public Result<VirtualMachineMetadata> createVirtualMachine(String id, VirtualMachineSpecs specs, ImageMetadata image, String cloudDatasource) {
-        log.info("Creating virtual machine with id \"{}\" and specs [{} vCPUs] [{} vMEMORY] [{} vDISK]", id, specs.getVCpus(), specs.getVRamGb(), specs.getVDiskGb());
+        log.info("Creating virtual machine { id: {}, cpus: {}, memory: {}GB, disk: {}GB }", id, specs.getVCpus(), specs.getVRamGb(), specs.getVDiskGb());
         StorageVol newVolume = null;
         Domain newDomain = null;
         HashMap<String, String> ipAddresses = null;
@@ -49,7 +49,7 @@ public class KVMFacade {
             storageManager.uploadImageToVolume(
                     image.getSource(),
                     image.getUrl(),
-                    HYPERVISOR_CONNECTION.streamNew(0),
+                    HYPERVISOR_CONNECTION.streamNew(Stream.VIR_STREAM_NONBLOCK),
                     newVolume
             );
             newDomain = domainManager.createDomain(id, specs, cloudDatasource);
@@ -58,7 +58,7 @@ public class KVMFacade {
             return Result.success(new VirtualMachineMetadata(state, ipAddresses));
         } catch (Exception createException) {
             try {
-                log.info("Failed to create Domain with id {}.\n Deleting domain {} and volume {}.qcow2", id, id, id);
+                log.error("Failed to create Domain {}. Deleting domain {} and volume {}.qcow2", id, id, id);
                 cleanupResources(id);
             } catch (Exception cleanupException) {
                 createException.addSuppressed(cleanupException);
@@ -90,7 +90,7 @@ public class KVMFacade {
 
         if (domain != null) {
             try {
-                domainManager.shutdownDomain(domain);
+                domainManager.shutdownDomain(domain, true);
             } catch (Exception e) {
                 if (cleanupException == null) {
                     cleanupException = e;
@@ -135,9 +135,9 @@ public class KVMFacade {
         if (domain != null) {
             try {
                 log.info("Shutting down Domain \"{}\"", id);
-                domainManager.shutdownDomain(domain);
+                domainManager.shutdownDomain(domain, true);
             } catch (Exception e) {
-                log.info("Failed to shut down Domain \"{}\"", id);
+                log.error("Failed to shut down Domain \"{}\"", id);
                 cleanupException = e;
             }
         }
@@ -146,7 +146,7 @@ public class KVMFacade {
                 log.info("Deleting volume \"{}\".qcow2", id);
                 storageManager.deleteVolume(id);
             } catch (Exception e) {
-                log.info("Failed to delete volume \"{}\".qcow2", id);
+                log.error("Failed to delete volume \"{}\".qcow2", id);
                 if (cleanupException == null) {
                     cleanupException = e;
                 } else {
@@ -175,31 +175,38 @@ public class KVMFacade {
 
     public Result<VirtualMachineMetadata> deleteVirtualMachine(String id) {
         try {
-            domainManager.shutdownDomain(id);
+            log.info("Deleting Domain {}", id);
+            Domain domain = domainManager.getDomainById(id);
+            domainManager.shutdownDomain(domain, true);
             storageManager.deleteVolume(id);
-            domainManager.deleteDomain(id);
+            domainManager.deleteDomain(domain);
             return Result.success(null);
         } catch (Exception e) {
+            log.error("Failed to delete Domain {}", id);
             return Result.failure(e);
         }
     }
 
     public Result<VirtualMachineMetadata> stopVirtualMachine(String id) {
         try {
+            log.info("Stopping Domain {}", id);
             domainManager.shutdownDomain(id);
             return Result.success(null);
         } catch (Exception e) {
+            log.error("Failed to stop Domain {}", id);
             return Result.failure(e);
         }
     }
 
     public Result<VirtualMachineMetadata> restartVirtualMachine(String id) {
         try {
+            log.info("Restarting Domain {}", id);
             Domain domain = domainManager.restartDomain(id);
             HashMap<String, String> ipAddresses = domainManager.awaitForIpAssignment(domain);
             VirtualMachineState state = domainManager.getDomainState(domain);
             return Result.success(new VirtualMachineMetadata(state, ipAddresses));
         } catch (Exception e) {
+            log.error("Failed to restart Domain {}", id);
             return Result.failure(e);
         }
     }

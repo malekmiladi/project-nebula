@@ -17,7 +17,7 @@ public class LocalImageStrategy implements ImageDownloadStrategy {
     private final int CHUNK_SIZE = 4096;
 
     @Override
-    public void getImage(String url, Stream destination, StorageVol volume) throws URISyntaxException, MalformedURLException, IOException, LibvirtException {
+    public void getImage(String url, Stream destination, StorageVol volume) throws IOException, LibvirtException {
         File imageFile = new File(url);
         volume.upload(destination, 0, imageFile.length(), 0);
         FileInputStream in = new FileInputStream(imageFile);
