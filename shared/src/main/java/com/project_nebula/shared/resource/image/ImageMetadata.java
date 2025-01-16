@@ -1,14 +1,13 @@
 package com.project_nebula.shared.resource.image;
 
-import lombok.AllArgsConstructor;
-import lombok.Getter;
-import lombok.NoArgsConstructor;
-import lombok.Setter;
+import lombok.*;
 
 @Getter
 @Setter
 @AllArgsConstructor
 @NoArgsConstructor
+@Builder
+@Data
 public class ImageMetadata {
     private String url;
     private Source source;

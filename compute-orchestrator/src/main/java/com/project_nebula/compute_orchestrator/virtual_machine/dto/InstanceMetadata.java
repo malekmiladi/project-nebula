@@ -1,9 +1,6 @@
 package com.project_nebula.compute_orchestrator.virtual_machine.dto;
 
-import lombok.AllArgsConstructor;
-import lombok.Builder;
-import lombok.Data;
-import lombok.NoArgsConstructor;
+import lombok.*;
 
 import java.util.UUID;
 
@@ -11,9 +8,9 @@ import java.util.UUID;
 @NoArgsConstructor
 @AllArgsConstructor
 @Builder
-public class Metadata {
-
-    private UUID id;
+@Getter
+@Setter
+public class InstanceMetadata {
     private String region;
-
+    private UUID id;
 }

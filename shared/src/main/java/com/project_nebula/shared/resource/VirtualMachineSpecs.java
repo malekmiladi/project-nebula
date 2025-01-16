@@ -1,12 +1,12 @@
 package com.project_nebula.shared.resource;
 
-import lombok.Getter;
-import lombok.RequiredArgsConstructor;
-import lombok.Setter;
+import lombok.*;
 
 @RequiredArgsConstructor
+@Builder
 @Getter
 @Setter
+@Data
 public class VirtualMachineSpecs {
     private final int vCpus;
     private final int vRamGb;

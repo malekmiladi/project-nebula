@@ -1,17 +1,19 @@
 package com.project_nebula.compute_orchestrator.virtual_machine.dto;
 
-import lombok.AllArgsConstructor;
-import lombok.Builder;
-import lombok.Data;
-import lombok.NoArgsConstructor;
+import com.project_nebula.shared.resource.VirtualMachineSpecs;
+import com.project_nebula.shared.resource.image.ImageMetadata;
+import lombok.*;
 
 @Data
 @NoArgsConstructor
 @AllArgsConstructor
 @Builder
+@Getter
+@Setter
 public class VirtualMachineRequest {
 
-    private Specs specs;
-    private Metadata metadata;
+    InstanceMetadata metadata;
+    VirtualMachineSpecs specs;
+    ImageMetadata image;
 
 }

@@ -30,6 +30,8 @@ public class ComputeNode {
 
     private String region;
     private String state;
+    private String hostname;
+    private int port;
 
     @OneToMany(mappedBy = "node")
     private List<VirtualMachine> computeNodes;

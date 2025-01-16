@@ -46,6 +46,7 @@ dependencies {
 	testImplementation 'org.springframework.kafka:spring-kafka-test'
 	testRuntimeOnly 'org.junit.platform:junit-platform-launcher'
 	implementation project(":grpc-common")
+	implementation project(":shared")
 }
 
 dependencyManagement {
