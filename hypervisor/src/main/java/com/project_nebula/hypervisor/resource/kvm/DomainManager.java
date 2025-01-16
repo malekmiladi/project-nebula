@@ -1,6 +1,6 @@
-package com.project_nebula.hypervisor.resource.KVM;
+package com.project_nebula.hypervisor.resource.kvm;
 
-import com.project_nebula.hypervisor.resource.KVM.exceptions.*;
+import com.project_nebula.hypervisor.resource.kvm.exceptions.*;
 import com.project_nebula.hypervisor.resource.VirtualMachineSpecs;
 import com.project_nebula.hypervisor.resource.VirtualMachineState;
 import com.project_nebula.hypervisor.utils.XMLBuilder;
@@ -9,7 +9,6 @@ import org.libvirt.Connect;
 import org.libvirt.Domain;
 import org.libvirt.Domain.RebootFlags;
 import org.libvirt.DomainInterface;
-import org.libvirt.LibvirtException;
 
 import javax.xml.parsers.ParserConfigurationException;
 import javax.xml.transform.TransformerException;

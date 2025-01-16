@@ -1,6 +1,4 @@
-package com.project_nebula.hypervisor.resource.KVM.exceptions;
-
-import org.libvirt.LibvirtException;
+package com.project_nebula.hypervisor.resource.kvm.exceptions;
 
 public class DomainInterfaceException extends RuntimeException {
     public DomainInterfaceException() {}

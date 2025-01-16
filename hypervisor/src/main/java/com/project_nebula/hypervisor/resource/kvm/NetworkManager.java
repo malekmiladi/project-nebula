@@ -1,4 +1,4 @@
-package com.project_nebula.hypervisor.resource.KVM;
+package com.project_nebula.hypervisor.resource.kvm;
 
 import org.libvirt.Connect;
 

@@ -3,7 +3,7 @@ package com.project_nebula.compute_node.api;
 import com.project_nebula.compute_node.ComputeConfiguration;
 import com.project_nebula.compute_node.utils.ApplicationControl;
 import com.project_nebula.hypervisor.HypervisorInterface;
-import com.project_nebula.hypervisor.resource.KVM.KVMFacade;
+import com.project_nebula.hypervisor.resource.kvm.KVMFacade;
 import com.project_nebula.hypervisor.resource.VirtualMachineMetadata;
 import com.project_nebula.hypervisor.resource.VirtualMachineSpecs;
 import com.project_nebula.hypervisor.resource.image.ImageMetadata;

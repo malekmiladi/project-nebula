@@ -1,4 +1,4 @@
-package com.project_nebula.hypervisor.resource.KVM.exceptions;
+package com.project_nebula.hypervisor.resource.kvm.exceptions;
 
 public class DomainDeleteException extends RuntimeException {
     public DomainDeleteException() {}
