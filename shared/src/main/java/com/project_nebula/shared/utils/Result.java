@@ -1,11 +1,15 @@
-package com.project_nebula.hypervisor.utils;
+package com.project_nebula.shared.utils;
 
+import com.project_nebula.shared.resource.VirtualMachineError;
+import lombok.Getter;
+
+@Getter
 public class Result<T> {
 
     private final T value;
-    private final Exception error;
+    private final VirtualMachineError error;
 
-    private Result(T value, Exception error) {
+    private Result(T value, VirtualMachineError error) {
         this.value = value;
         this.error = error;
     }
@@ -14,7 +18,7 @@ public class Result<T> {
         return new Result<>(value, null);
     }
 
-    public static <T> Result<T> failure(Exception error) {
+    public static <T> Result<T> failure(VirtualMachineError error) {
         return new Result<>(null, error);
     }
 
@@ -22,11 +26,4 @@ public class Result<T> {
         return error == null;
     }
 
-    public T getValue() {
-        return value;
-    }
-
-    public Exception getError() {
-        return error;
-    }
 }

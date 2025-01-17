@@ -8,7 +8,6 @@ import lombok.Setter;
 @Setter
 @Builder
 public class GRPCClientConfiguration {
-    private String id;
     private String hostname;
     private int port;
     private boolean tlsEnable;

@@ -1,9 +1,8 @@
 package com.project_nebula.hypervisor.resource.kvm;
 
-import com.project_nebula.hypervisor.utils.Result;
-import com.project_nebula.shared.resource.VirtualMachineMetadata;
-import com.project_nebula.shared.resource.VirtualMachineSpecs;
-import com.project_nebula.shared.resource.VirtualMachineState;
+import com.project_nebula.shared.resource.*;
+import com.project_nebula.shared.resource.VirtualMachineError;
+import com.project_nebula.shared.utils.Result;
 import com.project_nebula.shared.resource.image.ImageMetadata;
 import lombok.extern.slf4j.Slf4j;
 import org.libvirt.*;
@@ -63,7 +62,11 @@ public class KVMFacade {
             } catch (Exception cleanupException) {
                 createException.addSuppressed(cleanupException);
             }
-            return Result.failure(createException);
+            VirtualMachineError error = VirtualMachineError.builder()
+                    .message(createException.getMessage())
+                    .type(VirtualMachineErrorType.CREATE_ERROR)
+                    .build();
+            return Result.failure(error);
         }
     }
 
@@ -183,7 +186,11 @@ public class KVMFacade {
             return Result.success(null);
         } catch (Exception e) {
             log.error("Failed to delete Domain {}", id);
-            return Result.failure(e);
+            VirtualMachineError error = VirtualMachineError.builder()
+                    .message(e.getMessage())
+                    .type(VirtualMachineErrorType.DELETE_ERROR)
+                    .build();
+            return Result.failure(error);
         }
     }
 
@@ -194,7 +201,11 @@ public class KVMFacade {
             return Result.success(null);
         } catch (Exception e) {
             log.error("Failed to stop Domain {}", id);
-            return Result.failure(e);
+            VirtualMachineError error = VirtualMachineError.builder()
+                    .message(e.getMessage())
+                    .type(VirtualMachineErrorType.STOP_ERROR)
+                    .build();
+            return Result.failure(error);
         }
     }
 
@@ -207,7 +218,11 @@ public class KVMFacade {
             return Result.success(new VirtualMachineMetadata(state, ipAddresses));
         } catch (Exception e) {
             log.error("Failed to restart Domain {}", id);
-            return Result.failure(e);
+            VirtualMachineError error = VirtualMachineError.builder()
+                    .message(e.getMessage())
+                    .type(VirtualMachineErrorType.RESTART_ERROR)
+                    .build();
+            return Result.failure(error);
         }
     }
 

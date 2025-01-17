@@ -11,6 +11,24 @@ enum ImageSource {
   ONLINE = 1;
 }
 
+enum State {
+    STARTED = 0;
+    RUNNING = 1;
+    STOPPED = 2;
+    CRASHED = 3;
+    SHUTDOWN = 4;
+    FAILED = 5;
+    UNKNOWN = 6;
+}
+
+enum ErrorType {
+    CREATE_ERROR = 0;
+    DELETE_ERROR = 1;
+    STOP_ERROR = 2;
+    START_ERROR = 3;
+    RESTART_ERROR = 4;
+}
+
 message Image {
   string url = 1;
   ImageSource source = 2;
@@ -32,11 +50,11 @@ message VirtualMachine {
 message VirtualMachineMetadataDTO {
   string ipv4 = 1;
   string ipv6 = 2;
-  int32 state = 3;
+  State state = 3;
 }
 
 message VirtualMachineOperationError {
-  int32 type = 1;
+  ErrorType type = 1;
   string message = 2;
 }
 

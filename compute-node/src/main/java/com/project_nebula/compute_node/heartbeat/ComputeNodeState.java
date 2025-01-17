@@ -1,6 +1,6 @@
 package com.project_nebula.compute_node.heartbeat;
 
-public enum ComputeNodeStatus {
+public enum ComputeNodeState {
     OK,
     BROKEN,
 }

@@ -1,9 +1,7 @@
 package com.project_nebula.compute_node.operations;
 
-import com.project_nebula.grpc_common.virtual_machine_ops.proto.VirtualMachineMetadataDTO;
-import com.project_nebula.grpc_common.virtual_machine_ops.proto.VirtualMachineOperationError;
-import com.project_nebula.grpc_common.virtual_machine_ops.proto.VirtualMachineOperationResult;
-import com.project_nebula.hypervisor.utils.Result;
+import com.project_nebula.grpc_common.virtual_machine_ops.proto.*;
+import com.project_nebula.shared.utils.Result;
 import com.project_nebula.shared.resource.VirtualMachineMetadata;
 import org.springframework.stereotype.Service;
 
@@ -25,7 +23,7 @@ public class OperationsHandler {
             metadata = VirtualMachineMetadataDTO.newBuilder()
                     .setIpv4(opResult.getValue().getIpAddresses().get("ipv4"))
                     .setIpv6(opResult.getValue().getIpAddresses().get("ipv6"))
-                    .setState(opResult.getValue().getState().ordinal())
+                    .setState(State.valueOf(opResult.getValue().getState().name()))
                     .build();
             response.setMetadata(metadata);
         }
@@ -36,7 +34,7 @@ public class OperationsHandler {
 
     private VirtualMachineOperationResult handleOperationFailure(Result<VirtualMachineMetadata> opResult, Operation op) {
         VirtualMachineOperationError error = VirtualMachineOperationError.newBuilder()
-                .setType(op.ordinal())
+                .setType(ErrorType.forNumber(op.ordinal()))
                 .setMessage(opResult.getError().getMessage())
                 .build();
         return VirtualMachineOperationResult.newBuilder()

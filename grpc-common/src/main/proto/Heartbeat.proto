@@ -14,13 +14,11 @@ message Status {
 
 message Heartbeat {
   string id = 1;
-  Timestamp timestamp = 2;
   Status status = 3;
 }
 
 message HeartbeatAcknowledge {
   bool ack = 1;
-  Timestamp timestamp = 2;
 }
 
 service HeartbeatService {

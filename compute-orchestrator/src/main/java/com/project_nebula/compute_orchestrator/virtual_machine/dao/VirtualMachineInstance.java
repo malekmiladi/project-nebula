@@ -15,18 +15,17 @@ import java.util.UUID;
 @Builder
 @NoArgsConstructor
 @AllArgsConstructor
-public class VirtualMachine {
+public class VirtualMachineInstance {
 
     @Id
     @GeneratedValue(strategy = GenerationType.UUID)
     private UUID id;
 
     @ManyToOne
-    @JoinColumn(name = "id")
+    @JoinColumn(name = "compute_node_id")
     private ComputeNode node;
 
     private UUID name;
-    private String region;
 
     @CreatedDate
     private Date createdAt;

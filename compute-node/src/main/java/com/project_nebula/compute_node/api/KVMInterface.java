@@ -4,7 +4,7 @@ import com.project_nebula.compute_node.ComputeConfiguration;
 import com.project_nebula.compute_node.utils.ApplicationControl;
 import com.project_nebula.hypervisor.HypervisorInterface;
 import com.project_nebula.hypervisor.resource.kvm.KVMFacade;
-import com.project_nebula.hypervisor.utils.Result;
+import com.project_nebula.shared.utils.Result;
 import com.project_nebula.shared.resource.VirtualMachineMetadata;
 import com.project_nebula.shared.resource.VirtualMachineSpecs;
 import com.project_nebula.shared.resource.image.ImageMetadata;

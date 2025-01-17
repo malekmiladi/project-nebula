@@ -7,6 +7,8 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Service;
 
+import java.util.concurrent.TimeUnit;
+
 @Service
 @Slf4j
 public class HeartbeatService {
@@ -14,20 +16,21 @@ public class HeartbeatService {
     private final HeartbeatClient heartbeatClient;
     private final GRPCClientConfiguration conf;
     private boolean serverPong = false;
+    private final String id;
 
     public HeartbeatService(ComputeConfiguration conf) {
         this.conf = GRPCClientConfiguration.builder()
-                .id(conf.getId())
                 .hostname(conf.getGrpcServerHostname())
                 .port(conf.getGrpcServerPort())
                 .tlsEnable(conf.isGrpcServerTLSEnable())
-                .build();;
+                .build();
         heartbeatClient = new HeartbeatClient(this.conf, null);
+        id = conf.getId();
     }
 
-    @Scheduled(fixedRate = 5000)
+    @Scheduled(fixedRate = 60, timeUnit = TimeUnit.SECONDS)
     public void heartbeat() {
-        boolean pong = heartbeatClient.sendHeartBeat();
+        boolean pong = heartbeatClient.sendHeartBeat(id);
         if (pong != serverPong) {
             if (pong) {
                 log.info("Server {} acknowledged heartbeat.", conf.getHostname());

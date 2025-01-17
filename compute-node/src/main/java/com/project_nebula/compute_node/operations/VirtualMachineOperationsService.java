@@ -4,7 +4,7 @@ import com.project_nebula.compute_node.ComputeConfiguration;
 import com.project_nebula.compute_node.api.HypervisorInterfaceFactory;
 import com.project_nebula.grpc_common.virtual_machine_ops.proto.*;
 import com.project_nebula.hypervisor.HypervisorInterface;
-import com.project_nebula.hypervisor.utils.Result;
+import com.project_nebula.shared.utils.Result;
 import com.project_nebula.shared.resource.VirtualMachineMetadata;
 import com.project_nebula.shared.resource.VirtualMachineSpecs;
 import com.project_nebula.shared.resource.image.ImageMetadata;

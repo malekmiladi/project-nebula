@@ -1,9 +1,11 @@
 package com.project_nebula.compute_orchestrator.compute.dao;
 
-import com.project_nebula.compute_orchestrator.virtual_machine.dao.VirtualMachine;
+import com.project_nebula.compute_orchestrator.virtual_machine.dao.VirtualMachineInstance;
+import com.project_nebula.shared.compute.ComputeNodeState;
 import jakarta.persistence.*;
 import lombok.*;
 
+import java.sql.Timestamp;
 import java.util.List;
 import java.util.UUID;
 
@@ -29,11 +31,13 @@ public class ComputeNode {
     private int storage;
 
     private String region;
-    private String state;
+    private ComputeNodeState state;
     private String hostname;
     private int port;
 
+    private Timestamp heartbeatTimestamp;
+
     @OneToMany(mappedBy = "node")
-    private List<VirtualMachine> computeNodes;
+    private List<VirtualMachineInstance> computeNodes;
 
 }

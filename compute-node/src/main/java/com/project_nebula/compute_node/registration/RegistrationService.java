@@ -2,14 +2,20 @@ package com.project_nebula.compute_node.registration;
 
 import com.project_nebula.compute_node.ComputeConfiguration;
 import com.project_nebula.grpc_common.orchestrator_registration.proto.RegistrationAcknowledge;
-import com.project_nebula.grpc_common.registration.ComputeNodeMetadata;
 import com.project_nebula.grpc_common.GRPCClientConfiguration;
 import com.project_nebula.grpc_common.registration.RegistrationClient;
+import com.project_nebula.shared.compute.ComputeNodeMetadata;
+import com.project_nebula.shared.compute.ComputeNodeObject;
+import com.project_nebula.shared.compute.ComputeNodeSpecs;
+import com.project_nebula.shared.compute.ComputeNodeState;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.boot.CommandLineRunner;
 import org.springframework.stereotype.Service;
 
+import java.net.Inet4Address;
+import java.net.UnknownHostException;
 import java.time.Duration;
+import java.util.UUID;
 
 @Service
 @Slf4j
@@ -17,34 +23,42 @@ public class RegistrationService implements CommandLineRunner {
 
     private final RegistrationClient registrationClient;
     private final GRPCClientConfiguration grpcClientConfiguration;
-    private final ComputeNodeMetadata metadata;
+    private final ComputeNodeObject node;
     private final ComputeConfiguration conf;
 
-    public RegistrationService(ComputeConfiguration conf) {
+    public RegistrationService(ComputeConfiguration conf) throws UnknownHostException {
         this.conf = conf;
         this.grpcClientConfiguration = GRPCClientConfiguration.builder()
-                .id(conf.getId())
                 .hostname(conf.getGrpcServerHostname())
                 .port(conf.getGrpcServerPort())
                 .tlsEnable(conf.isGrpcServerTLSEnable())
                 .build();
-        this.metadata = ComputeNodeMetadata.builder()
+        ComputeNodeMetadata metadata = ComputeNodeMetadata.builder()
+                .id(UUID.fromString(conf.getId()))
+                .region(conf.getRegion())
+                .state(ComputeNodeState.ACTIVE)
+                .hostname(Inet4Address.getLocalHost().getHostAddress())
+                .port(9090)
+                .build();
+        ComputeNodeSpecs specs = ComputeNodeSpecs.builder()
+                .storage(conf.getSpareStorage())
                 .cpus(conf.getSpareCpus())
                 .memory(conf.getSpareMemory())
-                .region(conf.getRegion())
-                .storage(conf.getSpareStorage())
-                .cloudDatasourceUrl(conf.getCloudDatasourceUri())
                 .build();
-        this.registrationClient = new RegistrationClient(this.grpcClientConfiguration, this.metadata, null);
+        this.node = ComputeNodeObject.builder()
+                .metadata(metadata)
+                .specs(specs)
+                .build();
+        this.registrationClient = new RegistrationClient(this.grpcClientConfiguration, this.node, null);
     }
 
     @Override
     public void run(String... args) throws Exception {
         log.info("Registering compute node at '{}'", grpcClientConfiguration.getHostname() + ":" + grpcClientConfiguration.getPort());
-        log.info("Compute node specs: [{} vCPUS] [{}GB vRAM] [{}GB vDISK]", metadata.getCpus(), metadata.getMemory(), metadata.getStorage());
-        log.info("Virtual Machine Cloud Data Source: {}", metadata.getCloudDatasourceUrl());
+        log.info("Compute node specs: [{} vCPUS] [{}GB vRAM] [{}GB vDISK]", node.getSpecs().getCpus(), node.getSpecs().getMemory(), node.getSpecs().getStorage());
+        log.info("Virtual Machine Cloud Data Source: {}", conf.getCloudDatasourceUri());
         log.info("gRPC TLS enable: {}", grpcClientConfiguration.isTlsEnable());
-        //registerServer();
+        registerServer();
     }
 
     private void registerServer() throws Exception {

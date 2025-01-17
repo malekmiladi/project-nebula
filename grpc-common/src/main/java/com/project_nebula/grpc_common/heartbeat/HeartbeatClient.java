@@ -6,8 +6,6 @@ import io.grpc.CallCredentials;
 import io.grpc.ManagedChannel;
 import io.grpc.ManagedChannelBuilder;
 
-import java.time.Instant;
-
 public class HeartbeatClient {
     private final HeartbeatServiceGrpc.HeartbeatServiceBlockingStub blockingStub;
     private final CallCredentials callCredentials;
@@ -25,25 +23,19 @@ public class HeartbeatClient {
         this.blockingStub = HeartbeatServiceGrpc.newBlockingStub(channel);
     }
 
-    private Heartbeat createNewHeartbeat() {
+    private Heartbeat createNewHeartbeat(String id) {
         Status status = Status.newBuilder()
                 .setCode(ClientStatus.OK.ordinal())
                 .setMessage("Ping")
                 .build();
-        Timestamp timestamp = Timestamp.newBuilder()
-                .setSeconds(Instant.now().getEpochSecond())
-                .setNanos(Instant.now().getNano())
-                .build();
         return Heartbeat.newBuilder()
-                .setId(conf.getId())
+                .setId(id)
                 .setStatus(status)
-                .setTimestamp(timestamp)
                 .build();
     }
 
-    public boolean sendHeartBeat() {
-        Heartbeat heartbeat = createNewHeartbeat();
-        HeartbeatAcknowledge heartbeatAcknowledge;
+    public boolean sendHeartBeat(String id) {
+        Heartbeat heartbeat = createNewHeartbeat(id);
         if (conf.isTlsEnable()) {
             return blockingStub
                     .withCallCredentials(callCredentials)

@@ -8,9 +8,8 @@ import java.util.HashMap;
 @Setter
 @AllArgsConstructor
 @Builder
-@NoArgsConstructor
 @Data
 public class VirtualMachineMetadata {
-    private VirtualMachineState state;
-    private HashMap<String, String> ipAddresses;
+    private final VirtualMachineState state;
+    private final HashMap<String, String> ipAddresses;
 }

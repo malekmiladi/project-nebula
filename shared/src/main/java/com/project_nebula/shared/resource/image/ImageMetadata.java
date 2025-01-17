@@ -5,10 +5,9 @@ import lombok.*;
 @Getter
 @Setter
 @AllArgsConstructor
-@NoArgsConstructor
 @Builder
 @Data
 public class ImageMetadata {
-    private String url;
-    private Source source;
+    private final String url;
+    private final Source source;
 }

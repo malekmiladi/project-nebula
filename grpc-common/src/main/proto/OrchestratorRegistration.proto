@@ -3,11 +3,22 @@ option java_multiple_files = true;
 option java_package = "com.project_nebula.grpc_common.orchestrator_registration.proto";
 
 message RegistrationParameters {
-  string id = 1;
-  int32 spareCpus = 2;
-  int32 spareMemory = 3;
-  int32 spareStorage = 4;
-  string region = 5;
+  ComputeMetadata metadata = 1;
+  ComputeSpecs specs = 2;
+}
+
+message ComputeMetadata {
+  string id= 1;
+  string region = 2;
+  string hostname = 3;
+  int32 port = 4;
+  string state = 5;
+}
+
+message ComputeSpecs {
+  int32 cpus = 1;
+  int32 memory = 2;
+  int32 storage = 3;
 }
 
 message RegistrationAcknowledge {
