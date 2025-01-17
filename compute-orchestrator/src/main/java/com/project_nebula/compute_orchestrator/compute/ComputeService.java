@@ -60,7 +60,7 @@ public class ComputeService {
         return true;
     }
 
-    private ComputeNodeObject buildComputeNodeObjectFromComputeNode(ComputeNode node) {
+    public ComputeNodeObject buildComputeNodeObjectFromComputeNode(ComputeNode node) {
         ComputeNodeMetadata metadata = ComputeNodeMetadata.builder()
                 .port(node.getPort())
                 .hostname(node.getHostname())
@@ -87,11 +87,11 @@ public class ComputeService {
         return null;
     }
 
-    public void updateNodeResourcesData(UUID id, VirtualMachineSpecs specs) {
+    public void updateNodeResourcesData(UUID id, VirtualMachineSpecs specs, int sign) {
         ComputeNode node = computeRepository.getComputeNodeById(id);
-        node.setCpus(node.getCpus() - specs.getVCpus());
-        node.setMemory(node.getMemory() - specs.getVRamGb());
-        node.setStorage(node.getStorage() - specs.getVDiskGb());
+        node.setCpus(node.getCpus() + specs.getVCpus() * sign);
+        node.setMemory(node.getMemory() + specs.getVRamGb() * sign);
+        node.setStorage(node.getStorage() + specs.getVDiskGb() * sign);
         computeRepository.save(node);
     }
 

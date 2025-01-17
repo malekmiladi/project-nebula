@@ -29,10 +29,12 @@ public class VirtualMachineService {
 
     public Result<VirtualMachineMetadata> createVirtualMachine(VirtualMachineRequest virtualMachineRequest) {
         ComputeNodeObject node = computeService.findNodeForVirtualMachine(virtualMachineRequest);
+
         if (node == null) {
             return null;
         }
-        computeService.updateNodeResourcesData(node.getMetadata().getId(), virtualMachineRequest.getSpecs());
+
+        computeService.updateNodeResourcesData(node.getMetadata().getId(), virtualMachineRequest.getSpecs(), -1);
         UUID id = registerVirtualMachine(node, virtualMachineRequest);
         VirtualMachineOperationsClient client = createNewClient(node);
         VirtualMachine request = buildVirtualMachineMessageFromRequest(id, virtualMachineRequest);
@@ -40,8 +42,11 @@ public class VirtualMachineService {
 
         if (response.getSuccess()) {
             VirtualMachineMetadata metadata = buildVirtualMachineMetadataFromResponseMetadata(response.getMetadata());
+            virtualMachineRepository.updateStateById(id, VirtualMachineState.RUNNING);
             return Result.success(metadata);
         } else {
+            virtualMachineRepository.deleteById(id);
+            computeService.updateNodeResourcesData(node.getMetadata().getId(), virtualMachineRequest.getSpecs(), 1);
             VirtualMachineError error = buildVirtualMachineErrorFromResponseError(response.getError());
             return Result.failure(error);
         }
@@ -51,6 +56,7 @@ public class VirtualMachineService {
         VirtualMachineInstance vm = VirtualMachineInstance.builder()
                 .name(virtualMachineRequest.getMetadata().getId())
                 .node(computeService.getComputeNodeById(node.getMetadata().getId()))
+                .state(VirtualMachineState.UNKNOWN)
                 .build();
         return virtualMachineRepository.save(vm).getId();
     }
@@ -96,6 +102,73 @@ public class VirtualMachineService {
                 .message(error.getMessage())
                 .type(VirtualMachineErrorType.valueOf(error.getType().name()))
                 .build();
+    }
+
+    public Result<Boolean> stopVirtualMachine(VirtualMachineRequest virtualMachineRequest) {
+        VirtualMachineInstance vm = virtualMachineRepository.findOneByName(virtualMachineRequest.getMetadata().getId());
+        ComputeNodeObject node = computeService.buildComputeNodeObjectFromComputeNode(vm.getNode());
+        VirtualMachineOperationsClient client = createNewClient(node);
+        VirtualMachine request = buildVirtualMachineMessageFromRequest(vm.getId(), virtualMachineRequest);
+        VirtualMachineOperationResult response = client.stopVM(request);
+
+        if (response.getSuccess()) {
+            virtualMachineRepository.updateStateById(vm.getId(), VirtualMachineState.STOPPED);
+            return Result.success(true);
+        } else {
+            VirtualMachineError error = buildVirtualMachineErrorFromResponseError(response.getError());
+            return Result.failure(error);
+        }
+
+    }
+
+    public Result<VirtualMachineMetadata> restartVirtualMachine(VirtualMachineRequest virtualMachineRequest) {
+        VirtualMachineInstance vm = virtualMachineRepository.findOneByName(virtualMachineRequest.getMetadata().getId());
+        ComputeNodeObject node = computeService.buildComputeNodeObjectFromComputeNode(vm.getNode());
+        VirtualMachineOperationsClient client = createNewClient(node);
+        VirtualMachine request = buildVirtualMachineMessageFromRequest(vm.getId(), virtualMachineRequest);
+        VirtualMachineOperationResult response = client.restartVM(request);
+
+        return getVirtualMachineMetadataResult(vm, response);
+
+    }
+
+    public Result<VirtualMachineMetadata> startVirtualMachine(VirtualMachineRequest virtualMachineRequest) {
+        VirtualMachineInstance vm = virtualMachineRepository.findOneByName(virtualMachineRequest.getMetadata().getId());
+        ComputeNodeObject node = computeService.buildComputeNodeObjectFromComputeNode(vm.getNode());
+        VirtualMachineOperationsClient client = createNewClient(node);
+        VirtualMachine request = buildVirtualMachineMessageFromRequest(vm.getId(), virtualMachineRequest);
+        VirtualMachineOperationResult response = client.startVM(request);
+
+        return getVirtualMachineMetadataResult(vm, response);
+
+    }
+
+    private Result<VirtualMachineMetadata> getVirtualMachineMetadataResult(VirtualMachineInstance vm, VirtualMachineOperationResult response) {
+        if (response.getSuccess()) {
+            VirtualMachineMetadata metadata = buildVirtualMachineMetadataFromResponseMetadata(response.getMetadata());
+            virtualMachineRepository.updateStateById(vm.getId(), VirtualMachineState.RUNNING);
+            return Result.success(metadata);
+        } else {
+            VirtualMachineError error = buildVirtualMachineErrorFromResponseError(response.getError());
+            return Result.failure(error);
+        }
+    }
+
+    public Result<Boolean> deleteVirtualMachine(VirtualMachineRequest virtualMachineRequest) {
+        VirtualMachineInstance vm = virtualMachineRepository.findOneByName(virtualMachineRequest.getMetadata().getId());
+        ComputeNodeObject node = computeService.buildComputeNodeObjectFromComputeNode(vm.getNode());
+        VirtualMachineOperationsClient client = createNewClient(node);
+        VirtualMachine request = buildVirtualMachineMessageFromRequest(vm.getId(), virtualMachineRequest);
+        VirtualMachineOperationResult response = client.deleteVM(request);
+
+        if (response.getSuccess()) {
+            computeService.updateNodeResourcesData(node.getMetadata().getId(), virtualMachineRequest.getSpecs(), 1);
+            virtualMachineRepository.deleteById(vm.getId());
+            return Result.success(true);
+        } else {
+            VirtualMachineError error = buildVirtualMachineErrorFromResponseError(response.getError());
+            return Result.failure(error);
+        }
     }
 
 }

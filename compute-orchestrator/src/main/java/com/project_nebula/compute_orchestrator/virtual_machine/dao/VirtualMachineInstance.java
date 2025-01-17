@@ -1,6 +1,7 @@
 package com.project_nebula.compute_orchestrator.virtual_machine.dao;
 
 import com.project_nebula.compute_orchestrator.compute.dao.ComputeNode;
+import com.project_nebula.shared.resource.VirtualMachineState;
 import jakarta.persistence.*;
 import lombok.*;
 import org.springframework.data.annotation.CreatedDate;
@@ -26,6 +27,8 @@ public class VirtualMachineInstance {
     private ComputeNode node;
 
     private UUID name;
+
+    private VirtualMachineState state;
 
     @CreatedDate
     private Date createdAt;
