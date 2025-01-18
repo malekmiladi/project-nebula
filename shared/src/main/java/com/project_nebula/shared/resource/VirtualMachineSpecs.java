@@ -8,7 +8,7 @@ import lombok.*;
 @Setter
 @Data
 public class VirtualMachineSpecs {
-    private final int vCpus;
-    private final int vRamGb;
-    private final int vDiskGb;
+    private final int cpus;
+    private final int memory;
+    private final int disk;
 }

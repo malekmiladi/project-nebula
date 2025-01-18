@@ -89,9 +89,9 @@ public class ComputeService {
 
     public void updateNodeResourcesData(UUID id, VirtualMachineSpecs specs, int sign) {
         ComputeNode node = computeRepository.getComputeNodeById(id);
-        node.setCpus(node.getCpus() + specs.getVCpus() * sign);
-        node.setMemory(node.getMemory() + specs.getVRamGb() * sign);
-        node.setStorage(node.getStorage() + specs.getVDiskGb() * sign);
+        node.setCpus(node.getCpus() + specs.getCpus() * sign);
+        node.setMemory(node.getMemory() + specs.getMemory() * sign);
+        node.setStorage(node.getStorage() + specs.getDisk() * sign);
         computeRepository.save(node);
     }
 

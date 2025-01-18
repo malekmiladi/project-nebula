@@ -38,13 +38,13 @@ public class KVMFacade {
     }
 
     public Result<VirtualMachineMetadata> createVirtualMachine(String id, VirtualMachineSpecs specs, ImageMetadata image, String cloudDatasource) {
-        log.info("Creating virtual machine { id: {}, cpus: {}, memory: {}GB, disk: {}GB }", id, specs.getVCpus(), specs.getVRamGb(), specs.getVDiskGb());
+        log.info("Creating virtual machine { id: {}, cpus: {}, memory: {}GB, disk: {}GB }", id, specs.getCpus(), specs.getMemory(), specs.getDisk());
         StorageVol newVolume = null;
         Domain newDomain = null;
         HashMap<String, String> ipAddresses = null;
         VirtualMachineState state = null;
         try {
-            newVolume = storageManager.createVolume(id, specs.getVDiskGb());
+            newVolume = storageManager.createVolume(id, specs.getDisk());
             storageManager.uploadImageToVolume(
                     image.getSource(),
                     image.getUrl(),

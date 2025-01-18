@@ -72,9 +72,9 @@ public class VirtualMachineService {
 
     private VirtualMachine buildVirtualMachineMessageFromRequest(UUID id, VirtualMachineRequest request) {
         Specs specs = Specs.newBuilder()
-                .setCpus(request.getSpecs().getVCpus())
-                .setMemory(request.getSpecs().getVRamGb())
-                .setStorage(request.getSpecs().getVDiskGb())
+                .setCpus(request.getSpecs().getCpus())
+                .setMemory(request.getSpecs().getMemory())
+                .setStorage(request.getSpecs().getDisk())
                 .build();
         Image image = Image.newBuilder()
                 .setSource(ImageSource.valueOf(request.getImage().getSource().name()))
