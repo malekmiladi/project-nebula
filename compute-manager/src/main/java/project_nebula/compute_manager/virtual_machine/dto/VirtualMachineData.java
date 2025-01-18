@@ -15,7 +15,7 @@ import java.util.UUID;
 public class VirtualMachineData {
 
     private UUID id;
-    private VirtualMachineMetadata metadata;
+    private VirtualMachineInstanceMetadata metadata;
     private VirtualMachineSpecs specs;
     private ImageData image;
 

@@ -12,7 +12,7 @@ import java.util.UUID;
 @Data
 @AllArgsConstructor
 @NoArgsConstructor
-public class VirtualMachineMetadata {
+public class VirtualMachineInstanceMetadata {
     private UUID userId;
     private String name;
     private String description;

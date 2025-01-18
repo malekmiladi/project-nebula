@@ -2,8 +2,8 @@ package com.project_nebula.compute_orchestrator.virtual_machine;
 
 import com.project_nebula.compute_orchestrator.compute.ComputeService;
 import com.project_nebula.compute_orchestrator.virtual_machine.dao.VirtualMachineInstance;
-import com.project_nebula.compute_orchestrator.virtual_machine.dto.VirtualMachineRequest;
-import com.project_nebula.compute_orchestrator.virtual_machine.dto.VirtualMachineResponse;
+import com.project_nebula.shared.resource.VirtualMachineRequest;
+import com.project_nebula.shared.resource.VirtualMachineResponse;
 import com.project_nebula.grpc_common.GRPCClientConfiguration;
 import com.project_nebula.grpc_common.virtual_machine_operations.VirtualMachineOperationsClient;
 import com.project_nebula.grpc_common.virtual_machine_ops.proto.*;

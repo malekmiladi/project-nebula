@@ -1,7 +1,7 @@
 package com.project_nebula.compute_orchestrator.virtual_machine;
 
-import com.project_nebula.compute_orchestrator.virtual_machine.dto.VirtualMachineRequest;
-import com.project_nebula.compute_orchestrator.virtual_machine.dto.VirtualMachineResponse;
+import com.project_nebula.shared.resource.VirtualMachineRequest;
+import com.project_nebula.shared.resource.VirtualMachineResponse;
 import com.project_nebula.shared.utils.Result;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;

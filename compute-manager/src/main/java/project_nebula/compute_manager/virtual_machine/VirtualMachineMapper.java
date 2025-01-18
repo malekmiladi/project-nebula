@@ -4,13 +4,13 @@ import com.project_nebula.shared.resource.VirtualMachineSpecs;
 import project_nebula.compute_manager.Image.ImageMapper;
 import project_nebula.compute_manager.virtual_machine.dao.VirtualMachine;
 import project_nebula.compute_manager.virtual_machine.dto.VirtualMachineData;
-import project_nebula.compute_manager.virtual_machine.dto.VirtualMachineMetadata;
+import project_nebula.compute_manager.virtual_machine.dto.VirtualMachineInstanceMetadata;
 
 import java.sql.Date;
 
 public class VirtualMachineMapper {
     public static VirtualMachineData toVirtualMachineData(VirtualMachine vm) {
-        VirtualMachineMetadata metadata = VirtualMachineMetadata.builder()
+        VirtualMachineInstanceMetadata metadata = VirtualMachineInstanceMetadata.builder()
                 .userId(vm.getUserId())
                 .name(vm.getName())
                 .description(vm.getDescription())

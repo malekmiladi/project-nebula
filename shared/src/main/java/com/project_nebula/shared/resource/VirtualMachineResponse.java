@@ -1,7 +1,5 @@
-package com.project_nebula.compute_orchestrator.virtual_machine.dto;
+package com.project_nebula.shared.resource;
 
-import com.project_nebula.shared.resource.VirtualMachineError;
-import com.project_nebula.shared.resource.VirtualMachineMetadata;
 import lombok.*;
 
 import java.util.UUID;

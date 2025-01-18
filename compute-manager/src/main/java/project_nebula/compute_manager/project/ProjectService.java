@@ -99,4 +99,8 @@ public class ProjectService {
         );
     }
 
+    public Optional<Project> getProjectById(UUID id) {
+        return projectRepository.findById(id);
+    }
+
 }

@@ -1,6 +1,5 @@
-package com.project_nebula.compute_orchestrator.virtual_machine.dto;
+package com.project_nebula.shared.resource;
 
-import com.project_nebula.shared.resource.VirtualMachineSpecs;
 import com.project_nebula.shared.resource.image.ImageMetadata;
 import lombok.*;
 
@@ -12,7 +11,7 @@ import lombok.*;
 @Setter
 public class VirtualMachineRequest {
 
-    InstanceMetadata metadata;
+    VirtualMachineInstanceMetadata metadata;
     VirtualMachineSpecs specs;
     ImageMetadata image;
 

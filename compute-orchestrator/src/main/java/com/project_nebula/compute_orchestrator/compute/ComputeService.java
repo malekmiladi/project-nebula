@@ -1,7 +1,7 @@
 package com.project_nebula.compute_orchestrator.compute;
 
 import com.project_nebula.compute_orchestrator.compute.dao.ComputeNode;
-import com.project_nebula.compute_orchestrator.virtual_machine.dto.VirtualMachineRequest;
+import com.project_nebula.shared.resource.VirtualMachineRequest;
 import com.project_nebula.grpc_common.heartbeat.proto.Heartbeat;
 import com.project_nebula.grpc_common.orchestrator_registration.proto.RegistrationParameters;
 import com.project_nebula.shared.compute.ComputeNodeMetadata;

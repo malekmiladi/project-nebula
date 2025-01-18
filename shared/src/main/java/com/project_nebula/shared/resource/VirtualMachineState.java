@@ -7,5 +7,8 @@ public enum VirtualMachineState {
     CRASHED,
     SHUTDOWN,
     FAILED,
+    CREATING,
+    DELETING,
+    RESTARTING,
     UNKNOWN
 }

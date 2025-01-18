@@ -1,4 +1,4 @@
-package com.project_nebula.compute_orchestrator.virtual_machine.dto;
+package com.project_nebula.shared.resource;
 
 import lombok.*;
 
@@ -10,7 +10,7 @@ import java.util.UUID;
 @Builder
 @Getter
 @Setter
-public class InstanceMetadata {
+public class VirtualMachineInstanceMetadata {
     private String region;
     private UUID id;
 }
