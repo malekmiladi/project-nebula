@@ -46,11 +46,12 @@ public class VirtualMachineController {
     public ResponseEntity<VirtualMachineData> deleteVirtualMachine(
         @PathVariable UUID userId,
         @PathVariable UUID projectId,
-        @PathVariable UUID id,
-        @RequestBody VirtualMachineData virtualMachineData
+        @PathVariable UUID id
     ) {
         try {
             return ResponseEntity.ok(virtualMachineService.startDeleteVirtualMachineWorkflow(projectId, id));
+        } catch (NoSuchElementException e) {
+            return ResponseEntity.notFound().build();
         }
     }
 

@@ -24,7 +24,11 @@ public class ProjectController {
     }
 
     @PutMapping("/{userId}/{projectId}")
-    public ResponseEntity<ProjectData> updateProject(@PathVariable UUID userId, @PathVariable UUID projectId, @RequestBody ProjectData projectData) {
+    public ResponseEntity<ProjectData> updateProject(
+        @PathVariable UUID userId,
+        @PathVariable UUID projectId,
+        @RequestBody ProjectData projectData
+    ) {
         try {
             return ResponseEntity.ok(projectService.updateProject(projectId, projectData));
         } catch (NoSuchElementException e) {
@@ -33,7 +37,10 @@ public class ProjectController {
     }
 
     @DeleteMapping("/{userId}/{projectId}")
-    public ResponseEntity<Void> deleteProject(@PathVariable UUID userId, @PathVariable UUID projectId) {
+    public ResponseEntity<Void> deleteProject(
+        @PathVariable UUID userId,
+        @PathVariable UUID projectId
+    ) {
         try {
             projectService.deleteProject(projectId);
             return ResponseEntity.ok().build();
@@ -48,7 +55,11 @@ public class ProjectController {
     }
 
     @PostMapping("/{userId}/{projectId}/tag")
-    public ResponseEntity<ProjectTagMetadata> addTag(@PathVariable UUID userId, @PathVariable UUID projectId, @RequestBody ProjectTagMetadata tag) {
+    public ResponseEntity<ProjectTagMetadata> addTag(
+        @PathVariable UUID userId,
+        @PathVariable UUID projectId,
+        @RequestBody ProjectTagMetadata tag
+    ) {
         try {
             return ResponseEntity.status(HttpStatus.CREATED).body(projectService.addTag(projectId, tag));
         } catch (NoSuchElementException e) {
@@ -57,7 +68,12 @@ public class ProjectController {
     }
 
     @PutMapping("/{userId}/{projectId}/tag/{tagId}")
-    public ResponseEntity<ProjectTagMetadata> updateTag(@PathVariable UUID userId, @PathVariable UUID projectId, @PathVariable UUID tagId, @RequestBody ProjectTagMetadata tag) {
+    public ResponseEntity<ProjectTagMetadata> updateTag(
+        @PathVariable UUID userId,
+        @PathVariable UUID projectId,
+        @PathVariable UUID tagId,
+        @RequestBody ProjectTagMetadata tag
+    ) {
         try {
             return ResponseEntity.ok().body(projectService.updateTag(projectId, tagId, tag));
         } catch (NoSuchElementException e) {
@@ -66,7 +82,11 @@ public class ProjectController {
     }
 
     @DeleteMapping("/{userId}/{projectId}/tag/{tagId}")
-    public ResponseEntity<UUID> deleteTag(@PathVariable UUID userId, @PathVariable UUID projectId, @PathVariable UUID tagId) {
+    public ResponseEntity<UUID> deleteTag(
+        @PathVariable UUID userId,
+        @PathVariable UUID projectId,
+        @PathVariable UUID tagId
+    ) {
         try {
             projectService.deleteTag(projectId, tagId);
             return ResponseEntity.ok().build();
