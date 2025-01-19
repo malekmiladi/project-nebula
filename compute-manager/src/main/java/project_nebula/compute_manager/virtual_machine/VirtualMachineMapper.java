@@ -1,6 +1,9 @@
 package project_nebula.compute_manager.virtual_machine;
 
+import com.project_nebula.shared.resource.VirtualMachineRequest;
+import com.project_nebula.shared.resource.VirtualMachineRequestMetadata;
 import com.project_nebula.shared.resource.VirtualMachineSpecs;
+import com.project_nebula.shared.resource.image.ImageMetadata;
 import project_nebula.compute_manager.Image.ImageMapper;
 import project_nebula.compute_manager.virtual_machine.dao.VirtualMachine;
 import project_nebula.compute_manager.virtual_machine.dto.VirtualMachineData;
@@ -51,6 +54,29 @@ public class VirtualMachineMapper {
                 .externalIpV6(vmData.getMetadata().getExternalIpv6Address())
                 .image(ImageMapper.toImage(vmData.getImage()))
                 .state(vmData.getMetadata().getState())
+                .build();
+    }
+
+    public static VirtualMachineRequest toVirtualMachineRequest(VirtualMachine vm, String authToken) {
+        VirtualMachineRequestMetadata metadata = VirtualMachineRequestMetadata.builder()
+                .region(vm.getRegion())
+                .id(vm.getId())
+                .state(vm.getState())
+                .authToken(authToken)
+                .build();
+        VirtualMachineSpecs specs = VirtualMachineSpecs.builder()
+                .cpus(vm.getCpus())
+                .memory(vm.getMemory())
+                .disk(vm.getDisk())
+                .build();
+        ImageMetadata image = ImageMetadata.builder()
+                .source(vm.getImage().getSource())
+                .url(vm.getImage().getUrl())
+                .build();
+        return VirtualMachineRequest.builder()
+                .metadata(metadata)
+                .specs(specs)
+                .image(image)
                 .build();
     }
 

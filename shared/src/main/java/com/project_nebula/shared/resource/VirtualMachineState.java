@@ -10,5 +10,6 @@ public enum VirtualMachineState {
     CREATING,
     DELETING,
     RESTARTING,
+    STOPPING,
     UNKNOWN
 }

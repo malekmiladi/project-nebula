@@ -10,7 +10,9 @@ import java.util.UUID;
 @Builder
 @Getter
 @Setter
-public class VirtualMachineInstanceMetadata {
+public class VirtualMachineRequestMetadata {
     private String region;
     private UUID id;
+    private String authToken;
+    private VirtualMachineState state;
 }

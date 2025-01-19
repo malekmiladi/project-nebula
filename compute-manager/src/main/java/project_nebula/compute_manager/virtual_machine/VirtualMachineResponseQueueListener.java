@@ -1,10 +1,10 @@
-package project_nebula.compute_manager;
+package project_nebula.compute_manager.virtual_machine;
 
+import com.project_nebula.shared.resource.VirtualMachineConfigurationResponse;
 import com.project_nebula.shared.resource.VirtualMachineResponse;
 import lombok.RequiredArgsConstructor;
 import org.springframework.kafka.annotation.KafkaListener;
 import org.springframework.stereotype.Service;
-import project_nebula.compute_manager.virtual_machine.VirtualMachineService;
 
 @Service
 @RequiredArgsConstructor
@@ -38,6 +38,11 @@ public class VirtualMachineResponseQueueListener {
         if (virtualMachineResponse.getError() == null) {
             virtualMachineService.stopVirtualMachine(virtualMachineResponse.getId());
         }
+    }
+
+    @KafkaListener(id = "project-nebula-virtual-machine", topics = "save-virtual-machine-config-responses")
+    public void sendCreateVirtualMachineRequestToOrchestrator(VirtualMachineConfigurationResponse response) {
+        virtualMachineService.sendCreateVirtualMachineRequestToOrchestrator(response.getId(), response.getAuthToken());
     }
 
 }

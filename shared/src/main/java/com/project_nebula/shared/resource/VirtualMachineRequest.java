@@ -11,7 +11,7 @@ import lombok.*;
 @Setter
 public class VirtualMachineRequest {
 
-    VirtualMachineInstanceMetadata metadata;
+    VirtualMachineRequestMetadata metadata;
     VirtualMachineSpecs specs;
     ImageMetadata image;
 

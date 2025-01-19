@@ -18,5 +18,6 @@ public class VirtualMachineData {
     private VirtualMachineInstanceMetadata metadata;
     private VirtualMachineSpecs specs;
     private ImageData image;
+    private String config;
 
 }
