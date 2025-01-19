@@ -5,3 +5,4 @@
 **/.idea
 **/gradlew
 **/gradlew.bat
+**/.venv
