@@ -5,7 +5,7 @@ import uuid
 from confluent_kafka import Consumer
 from dotenv import load_dotenv
 
-from db.databaseConnection import db
+from db.db_connection import db
 
 
 def main():
@@ -23,8 +23,8 @@ def main():
             if msg is None:
                 continue
             json_message = json.loads(msg.value())
-            instance_id = json_message["instanceId"]
-            instance_config = json.loads(json_message["instanceConfig"])
+            instance_id = json_message["id"]
+            instance_config = json.loads(json_message["config"])
             instance_config.update({"_id": uuid.UUID(instance_id).hex})
             db.save(instance_config)
         except KeyboardInterrupt:
