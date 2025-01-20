@@ -44,3 +44,9 @@ dependencies {
 tasks.named('test') {
 	useJUnitPlatform()
 }
+
+bootRun {
+	jvmArgs = [
+			"-Dspring.config.additional-location=file:${projectDir}/../compute-manager.properties"
+	]
+}

@@ -29,9 +29,9 @@ public class RegistrationService implements CommandLineRunner {
     public RegistrationService(ComputeConfiguration conf) throws UnknownHostException {
         this.conf = conf;
         this.grpcClientConfiguration = GRPCClientConfiguration.builder()
-                .hostname(conf.getGrpcServerHostname())
-                .port(conf.getGrpcServerPort())
-                .tlsEnable(conf.isGrpcServerTLSEnable())
+                .hostname(conf.getOrchestratorHostname())
+                .port(conf.getOrchestratorPort())
+                .tlsEnable(conf.isOrchestratorTLSEnable())
                 .build();
         ComputeNodeMetadata metadata = ComputeNodeMetadata.builder()
                 .id(UUID.fromString(conf.getId()))
@@ -41,9 +41,9 @@ public class RegistrationService implements CommandLineRunner {
                 .port(9090)
                 .build();
         ComputeNodeSpecs specs = ComputeNodeSpecs.builder()
-                .storage(conf.getSpareStorage())
-                .cpus(conf.getSpareCpus())
-                .memory(conf.getSpareMemory())
+                .storage(conf.getStorage())
+                .cpus(conf.getCpus())
+                .memory(conf.getMemory())
                 .build();
         this.node = ComputeNodeObject.builder()
                 .metadata(metadata)

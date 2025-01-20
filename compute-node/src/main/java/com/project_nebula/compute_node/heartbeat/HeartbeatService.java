@@ -20,15 +20,15 @@ public class HeartbeatService {
 
     public HeartbeatService(ComputeConfiguration conf) {
         this.conf = GRPCClientConfiguration.builder()
-                .hostname(conf.getGrpcServerHostname())
-                .port(conf.getGrpcServerPort())
-                .tlsEnable(conf.isGrpcServerTLSEnable())
+                .hostname(conf.getOrchestratorHostname())
+                .port(conf.getOrchestratorPort())
+                .tlsEnable(conf.isOrchestratorTLSEnable())
                 .build();
         heartbeatClient = new HeartbeatClient(this.conf, null);
         id = conf.getId();
     }
 
-    @Scheduled(fixedRate = 60, timeUnit = TimeUnit.SECONDS)
+    @Scheduled(fixedDelayString = "${project-nebula.compute-node.heartbeat.rate.seconds}", timeUnit = TimeUnit.SECONDS)
     public void heartbeat() {
         boolean pong = heartbeatClient.sendHeartBeat(id);
         if (pong != serverPong) {

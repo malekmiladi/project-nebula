@@ -1,5 +1,6 @@
 package com.project_nebula.compute_orchestrator.compute;
 
+import com.project_nebula.compute_orchestrator.OrchestratorConfiguration;
 import com.project_nebula.compute_orchestrator.compute.dao.ComputeNode;
 import com.project_nebula.shared.resource.VirtualMachineRequest;
 import com.project_nebula.grpc_common.heartbeat.proto.Heartbeat;
@@ -23,6 +24,7 @@ import java.util.UUID;
 public class ComputeService {
 
     private final ComputeRepository computeRepository;
+    private final OrchestratorConfiguration conf;
 
     private ComputeNode buildComputeNodeFromParams(RegistrationParameters params) {
         return ComputeNode.builder()
@@ -80,7 +82,7 @@ public class ComputeService {
     }
 
     public ComputeNodeObject findNodeForVirtualMachine(VirtualMachineRequest virtualMachineRequest) {
-        ComputeNode host = computeRepository.findOneByVirtualMachineSpecsAndHeartbeatTimeThreshold(60);
+        ComputeNode host = computeRepository.findOneByVirtualMachineSpecsAndHeartbeatTimeThreshold(conf.getHeartbeatRate());
         if (host != null) {
            return buildComputeNodeObjectFromComputeNode(host);
         }

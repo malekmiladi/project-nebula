@@ -12,7 +12,7 @@ public class HypervisorInterfaceFactory {
     }
 
     public HypervisorInterface getHypervisorInterface() {
-        return switch (conf.getHypervisorType()) {
+        return switch (conf.getHypervisor()) {
             // Might add more in the future
             case "KVM" -> new KVMInterface(conf);
             default -> null;

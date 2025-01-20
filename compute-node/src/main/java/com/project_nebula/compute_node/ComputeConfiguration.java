@@ -14,20 +14,21 @@ import java.io.IOException;
 @Slf4j
 public class ComputeConfiguration {
 
+    private int heartbeatRate;
     private String id;
     private String idFilePath;
-    private String hypervisorType;
-    private String hyperVisorConnectionURI;
+    private String hypervisor;
+    private String hypervisorConnectionURI;
     private String networkName;
     private String cloudDatasourceUri;
     private String storagePoolName;
     private String storagePoolLocation;
-    private String grpcServerHostname;
-    private int grpcServerPort;
-    private boolean grpcServerTLSEnable;
-    private int spareCpus;
-    private int spareMemory;
-    private int spareStorage;
+    private String orchestratorHostname;
+    private int orchestratorPort;
+    private boolean orchestratorTLSEnable;
+    private int cpus;
+    private int memory;
+    private int storage;
     private String region;
 
     @Value("${project-nebula.compute-node.service.id}")
@@ -40,14 +41,14 @@ public class ComputeConfiguration {
         this.idFilePath = idFilePath;
     }
 
-    @Value("${project-nebula.compute-node.hypervisor.type}")
-    private void setHypervisorType(String hypervisorType) {
-        this.hypervisorType = hypervisorType;
+    @Value("${project-nebula.compute-node.hypervisor}")
+    private void setHypervisor(String hypervisor) {
+        this.hypervisor = hypervisor;
     }
 
     @Value("${project-nebula.compute-node.hypervisor.kvm.connection.uri}")
-    private void setHyperVisorConnectionURI(String hyperVisorConnectionURI) {
-        this.hyperVisorConnectionURI = hyperVisorConnectionURI;
+    private void setHypervisorConnectionURI(String hypervisorConnectionURI) {
+        this.hypervisorConnectionURI = hypervisorConnectionURI;
     }
 
     @Value("${project-nebula.compute-node.cloud-datasource.url}")
@@ -70,39 +71,44 @@ public class ComputeConfiguration {
         this.storagePoolLocation = storagePoolLocation;
     }
 
-    @Value("${project-nebula.compute-node.grpc.server.host}")
-    private void setGrpcServerHostname(String grpcServerHostname) {
-        this.grpcServerHostname = grpcServerHostname;
+    @Value("${project-nebula.compute-node.grpc.compute-orchestrator.server.host}")
+    private void setOrchestratorHostname(String orchestratorHostname) {
+        this.orchestratorHostname = orchestratorHostname;
     }
 
-    @Value("${project-nebula.compute-node.grpc.server.port}")
-    private void setGrpcServerPort(int grpcServerPort) {
-        this.grpcServerPort = grpcServerPort;
+    @Value("${project-nebula.compute-node.grpc.orchestrator.server.port}")
+    private void setOrchestratorPort(int orchestratorPort) {
+        this.orchestratorPort = orchestratorPort;
     }
 
-    @Value("${project-nebula.compute-node.grpc.server.tls}")
-    private void setGrpcServerTLSEnable(boolean grpcServerTLSEnable) {
-        this.grpcServerTLSEnable = grpcServerTLSEnable;
+    @Value("${project-nebula.compute-node.grpc.orchestrator.server.tls}")
+    private void setOrchestratorTLSEnable(boolean orchestratorTLSEnable) {
+        this.orchestratorTLSEnable = orchestratorTLSEnable;
     }
 
     @Value("${project-nebula.compute-node.resource.cpu}")
-    private void setSpareCpus(int spareCpus) {
-        this.spareCpus = spareCpus;
+    private void setCpus(int cpus) {
+        this.cpus = cpus;
     }
 
     @Value("${project-nebula.compute-node.resource.memory}")
-    private void setSpareMemory(int spareMemory) {
-        this.spareMemory = spareMemory;
+    private void setMemory(int memory) {
+        this.memory = memory;
     }
 
     @Value("${project-nebula.compute-node.resource.storage}")
-    private void setSpareStorage(String spareStorage) {
-        this.spareStorage = Integer.parseInt(spareStorage);
+    private void setStorage(String storage) {
+        this.storage = Integer.parseInt(storage);
     }
 
     @Value("${project-nebula.compute-node.service.region}")
     private void setRegion(String region) {
         this.region = region;
+    }
+
+    @Value("${project-nebula.compute-orchestrator.heartbeat.rate.seconds}")
+    private void setHeartbeatRate(int heartbeatRate) {
+        this.heartbeatRate = heartbeatRate;
     }
 
     public void setNewId(String id) throws IOException {
