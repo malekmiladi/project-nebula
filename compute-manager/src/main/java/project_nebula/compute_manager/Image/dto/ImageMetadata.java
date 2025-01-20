@@ -2,8 +2,6 @@ package project_nebula.compute_manager.Image.dto;
 
 import lombok.*;
 
-@Getter
-@Setter
 @Builder
 @Data
 @AllArgsConstructor

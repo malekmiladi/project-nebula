@@ -11,11 +11,10 @@ import java.util.UUID;
 
 @Entity
 @Table(name = "virtual_machine")
-@Setter
-@Getter
 @Builder
 @NoArgsConstructor
 @AllArgsConstructor
+@Data
 public class VirtualMachineInstance {
 
     @Id

@@ -29,7 +29,7 @@ public class RegistrationClient {
 
     private RegistrationParameters createNewRegistrationRequest() {
         ComputeMetadata metadata = ComputeMetadata.newBuilder()
-                .setId(node.getMetadata().getId().toString())
+                .setId(node.getMetadata().getId() == null ? "" : node.getMetadata().getId().toString())
                 .setRegion(node.getMetadata().getRegion())
                 .setHostname(node.getMetadata().getHostname())
                 .setPort(node.getMetadata().getPort())

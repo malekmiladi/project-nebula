@@ -11,11 +11,10 @@ import java.util.UUID;
 
 @Entity
 @Table(name = "project")
-@Setter
-@Getter
 @Builder
 @AllArgsConstructor
 @NoArgsConstructor
+@Data
 public class Project {
 
     @Id

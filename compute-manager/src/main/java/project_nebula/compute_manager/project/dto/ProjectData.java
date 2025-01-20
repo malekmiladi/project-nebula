@@ -9,8 +9,6 @@ import java.util.UUID;
 
 @Builder
 @Data
-@Getter
-@Setter
 @AllArgsConstructor
 @NoArgsConstructor
 public class ProjectData {

@@ -4,8 +4,6 @@ import lombok.*;
 
 @RequiredArgsConstructor
 @Builder
-@Getter
-@Setter
 @Data
 public class VirtualMachineSpecs {
     private final int cpus;

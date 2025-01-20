@@ -2,8 +2,6 @@ package com.project_nebula.shared.resource.image;
 
 import lombok.*;
 
-@Getter
-@Setter
 @AllArgsConstructor
 @Builder
 @Data

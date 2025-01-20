@@ -4,8 +4,6 @@ import lombok.*;
 
 import java.util.HashMap;
 
-@Getter
-@Setter
 @AllArgsConstructor
 @Builder
 @Data

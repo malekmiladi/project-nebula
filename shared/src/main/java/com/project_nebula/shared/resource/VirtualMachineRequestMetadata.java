@@ -8,8 +8,6 @@ import java.util.UUID;
 @NoArgsConstructor
 @AllArgsConstructor
 @Builder
-@Getter
-@Setter
 public class VirtualMachineRequestMetadata {
     private String region;
     private UUID id;

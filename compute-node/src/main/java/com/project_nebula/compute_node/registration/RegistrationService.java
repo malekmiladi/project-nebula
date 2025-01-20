@@ -34,7 +34,7 @@ public class RegistrationService implements CommandLineRunner {
                 .tlsEnable(conf.isOrchestratorTLSEnable())
                 .build();
         ComputeNodeMetadata metadata = ComputeNodeMetadata.builder()
-                .id(UUID.fromString(conf.getId()))
+                .id(conf.getId().isEmpty() ? null : UUID.fromString(conf.getId()))
                 .region(conf.getRegion())
                 .state(ComputeNodeState.ACTIVE)
                 .hostname(Inet4Address.getLocalHost().getHostAddress())

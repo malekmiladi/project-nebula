@@ -14,31 +14,35 @@ import java.util.concurrent.TimeUnit;
 public class HeartbeatService {
 
     private final HeartbeatClient heartbeatClient;
-    private final GRPCClientConfiguration conf;
+    private final GRPCClientConfiguration clientConf;
+    private final ComputeConfiguration computeConf;
     private boolean serverPong = false;
     private final String id;
 
     public HeartbeatService(ComputeConfiguration conf) {
-        this.conf = GRPCClientConfiguration.builder()
+        this.computeConf = conf;
+        this.clientConf = GRPCClientConfiguration.builder()
                 .hostname(conf.getOrchestratorHostname())
                 .port(conf.getOrchestratorPort())
                 .tlsEnable(conf.isOrchestratorTLSEnable())
                 .build();
-        heartbeatClient = new HeartbeatClient(this.conf, null);
+        heartbeatClient = new HeartbeatClient(this.clientConf, null);
         id = conf.getId();
     }
 
     @Scheduled(fixedDelayString = "${project-nebula.compute-node.heartbeat.rate.seconds}", timeUnit = TimeUnit.SECONDS)
     public void heartbeat() {
-        boolean pong = heartbeatClient.sendHeartBeat(id);
-        if (pong != serverPong) {
-            if (pong) {
-                log.info("Server {} acknowledged heartbeat.", conf.getHostname());
-            } else {
-                log.info("Server {} didn't respond to heartbeat.", conf.getHostname());
+        if (!computeConf.getId().isEmpty()) {
+            boolean pong = heartbeatClient.sendHeartBeat(id);
+            if (pong != serverPong) {
+                if (pong) {
+                    log.info("Server {} acknowledged heartbeat.", clientConf.getHostname());
+                } else {
+                    log.info("Server {} didn't respond to heartbeat.", clientConf.getHostname());
+                }
             }
+            serverPong = pong;
         }
-        serverPong = pong;
     }
 
 }

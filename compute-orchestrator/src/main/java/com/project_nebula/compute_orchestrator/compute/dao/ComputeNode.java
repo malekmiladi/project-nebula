@@ -11,11 +11,10 @@ import java.util.UUID;
 
 @Entity
 @Table(name = "compute_node")
-@Setter
-@Getter
 @Builder
 @NoArgsConstructor
 @AllArgsConstructor
+@Data
 public class ComputeNode {
 
     @Id

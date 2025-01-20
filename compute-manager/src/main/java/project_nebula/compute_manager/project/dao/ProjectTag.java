@@ -7,8 +7,7 @@ import java.util.UUID;
 
 @Entity
 @Table(name = "project_tag")
-@Getter
-@Setter
+@Data
 @NoArgsConstructor
 @AllArgsConstructor
 @Builder

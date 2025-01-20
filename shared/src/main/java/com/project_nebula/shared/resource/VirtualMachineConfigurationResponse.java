@@ -7,8 +7,6 @@ import java.util.UUID;
 @Builder
 @AllArgsConstructor
 @Data
-@Getter
-@Setter
 public class VirtualMachineConfigurationResponse {
 
     private final String authToken;

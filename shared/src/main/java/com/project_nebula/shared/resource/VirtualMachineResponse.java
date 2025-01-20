@@ -6,8 +6,6 @@ import java.util.UUID;
 
 @Builder
 @Data
-@Getter
-@Setter
 @AllArgsConstructor
 public class VirtualMachineResponse {
     private final UUID id;

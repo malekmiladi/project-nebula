@@ -36,7 +36,7 @@ public class ComputeService {
                 .storage(params.getSpecs().getStorage())
                 .hostname(params.getMetadata().getHostname())
                 .port(params.getMetadata().getPort())
-                .id(UUID.fromString(params.getMetadata().getId()))
+                .id(params.getMetadata().getId().isEmpty() ? null : UUID.fromString(params.getMetadata().getId()))
                 .region(params.getMetadata().getRegion())
                 .state(ComputeNodeState.valueOf(params.getMetadata().getState()))
                 .build();
@@ -44,7 +44,12 @@ public class ComputeService {
 
     public UUID register(RegistrationParameters params) {
         ComputeNode node = buildComputeNodeFromParams(params);
-        UUID id = computeRepository.existsById(node.getId()) ? node.getId() : computeRepository.save(node).getId();
+        UUID id;
+        if (node.getId() == null) {
+            id = computeRepository.save(node).getId();
+        } else {
+            id = computeRepository.existsById(node.getId()) ? node.getId() : computeRepository.save(node).getId();
+        }
         node.setId(id);
         log.info("Registered new Compute Node: {}", node);
         return id;

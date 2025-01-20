@@ -106,7 +106,7 @@ public class ComputeConfiguration {
         this.region = region;
     }
 
-    @Value("${project-nebula.compute-orchestrator.heartbeat.rate.seconds}")
+    @Value("${project-nebula.compute-node.heartbeat.rate.seconds}")
     private void setHeartbeatRate(int heartbeatRate) {
         this.heartbeatRate = heartbeatRate;
     }
