@@ -2,11 +2,12 @@ package com.project_nebula.shared.resource;
 
 import lombok.*;
 
-@RequiredArgsConstructor
+@NoArgsConstructor
+@AllArgsConstructor
 @Builder
 @Data
 public class VirtualMachineSpecs {
-    private final int cpus;
-    private final int memory;
-    private final int disk;
+    private int cpus;
+    private int memory;
+    private int disk;
 }

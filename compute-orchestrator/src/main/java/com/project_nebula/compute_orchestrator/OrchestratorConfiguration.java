@@ -9,10 +9,16 @@ import org.springframework.stereotype.Component;
 public class OrchestratorConfiguration {
 
     private int heartbeatRate;
+    private int heartbeatTimeError;
 
     @Value("${project-nebula.compute-orchestrator.compute-node.heartbeat.rate.seconds}")
     public void setHeartbeatRate(int threshold) {
         this.heartbeatRate = threshold;
+    }
+
+    @Value("${project-nebula.compute-orchestrator.compute-node.heartbeat.time-error}")
+    public void setHeartbeatTimeError(int error) {
+        this.heartbeatTimeError = error;
     }
 
 }

@@ -51,18 +51,19 @@ public class ComputeService {
             id = computeRepository.existsById(node.getId()) ? node.getId() : computeRepository.save(node).getId();
         }
         node.setId(id);
-        log.info("Registered new Compute Node: {}", node);
+        log.info("Registered new {}", node);
         return id;
     }
 
     public boolean recordHeartbeat(Heartbeat heartbeat) {
+        log.info("Heartbeat from ComputeNode(id={})", heartbeat.getId());
         UUID id = UUID.fromString(heartbeat.getId());
         if (!computeRepository.existsById(id)) {
             return false;
         }
         ComputeNode node = computeRepository.getComputeNodeById(id);
         node.setState(ComputeNodeState.ACTIVE);
-        node.setHeartbeatTimestamp(Timestamp.valueOf(String.valueOf(Instant.now().getEpochSecond())));
+        node.setHeartbeatTimestamp(new Timestamp(System.currentTimeMillis()));
         computeRepository.save(node);
         return true;
     }
@@ -87,7 +88,7 @@ public class ComputeService {
     }
 
     public ComputeNodeObject findNodeForVirtualMachine(VirtualMachineRequest virtualMachineRequest) {
-        ComputeNode host = computeRepository.findOneByVirtualMachineSpecsAndHeartbeatTimeThreshold(conf.getHeartbeatRate());
+        ComputeNode host = computeRepository.findOneByVirtualMachineSpecsAndHeartbeatTimeThreshold(conf.getHeartbeatRate() + conf.getHeartbeatTimeError());
         if (host != null) {
            return buildComputeNodeObjectFromComputeNode(host);
         }

@@ -49,7 +49,12 @@ public class ProjectService {
     }
 
     public List<ProjectData> getAllProjects(UUID userId) {
-        return projectRepository.findByUserId(userId);
+        List<Project> projects = projectRepository.findByUserId(userId);
+        List<ProjectData> responseBody  = new ArrayList<>();
+        for (Project project : projects) {
+            responseBody.add(ProjectMapper.toProjectData(project));
+        }
+        return responseBody;
     }
 
     public ProjectTagMetadata addTag(UUID projectId, ProjectTagMetadata tag) {

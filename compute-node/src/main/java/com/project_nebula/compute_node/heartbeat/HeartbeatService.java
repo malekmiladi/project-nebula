@@ -17,7 +17,6 @@ public class HeartbeatService {
     private final GRPCClientConfiguration clientConf;
     private final ComputeConfiguration computeConf;
     private boolean serverPong = false;
-    private final String id;
 
     public HeartbeatService(ComputeConfiguration conf) {
         this.computeConf = conf;
@@ -27,13 +26,12 @@ public class HeartbeatService {
                 .tlsEnable(conf.isOrchestratorTLSEnable())
                 .build();
         heartbeatClient = new HeartbeatClient(this.clientConf, null);
-        id = conf.getId();
     }
 
     @Scheduled(fixedDelayString = "${project-nebula.compute-node.heartbeat.rate.seconds}", timeUnit = TimeUnit.SECONDS)
     public void heartbeat() {
         if (!computeConf.getId().isEmpty()) {
-            boolean pong = heartbeatClient.sendHeartBeat(id);
+            boolean pong = heartbeatClient.sendHeartBeat(computeConf.getId());
             if (pong != serverPong) {
                 if (pong) {
                     log.info("Server {} acknowledged heartbeat.", clientConf.getHostname());

@@ -54,8 +54,7 @@ public class RegistrationService implements CommandLineRunner {
 
     @Override
     public void run(String... args) throws Exception {
-        log.info("Registering compute node at '{}'", grpcClientConfiguration.getHostname() + ":" + grpcClientConfiguration.getPort());
-        log.info("Compute node specs: [{} vCPUS] [{}GB vRAM] [{}GB vDISK]", node.getSpecs().getCpus(), node.getSpecs().getMemory(), node.getSpecs().getStorage());
+        log.info(node.toString());
         log.info("Virtual Machine Cloud Data Source: {}", conf.getCloudDatasourceUri());
         log.info("gRPC TLS enable: {}", grpcClientConfiguration.isTlsEnable());
         registerServer();
@@ -64,10 +63,12 @@ public class RegistrationService implements CommandLineRunner {
     private void registerServer() throws Exception {
         boolean registered = false;
         while (!registered) {
+            log.info("Registering compute node at '{}'", grpcClientConfiguration.getHostname() + ":" + grpcClientConfiguration.getPort());
             RegistrationAcknowledge registrationResponse = registrationClient.registerComputeNode();
             if (registrationResponse.getAck()) {
                 conf.setNewId(registrationResponse.getId());
                 registered = true;
+                log.info("Registration success. Id: {}", registrationResponse.getId());
             } else {
                 log.warn("Registration failed. Retrying in 30s...");
                 Thread.sleep(Duration.ofSeconds(30));

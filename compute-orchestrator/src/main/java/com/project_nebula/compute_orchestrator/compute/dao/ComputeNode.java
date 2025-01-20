@@ -37,6 +37,6 @@ public class ComputeNode {
     private Timestamp heartbeatTimestamp;
 
     @OneToMany(mappedBy = "node")
-    private List<VirtualMachineInstance> computeNodes;
+    private List<VirtualMachineInstance> virtualMachines;
 
 }

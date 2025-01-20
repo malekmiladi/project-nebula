@@ -21,8 +21,8 @@ import java.util.UUID;
 @RequiredArgsConstructor
 public class VirtualMachineService {
 
-    VirtualMachineRepository virtualMachineRepository;
-    ProjectService projectService;
+    private final VirtualMachineRepository virtualMachineRepository;
+    private final ProjectService projectService;
     private final KafkaTemplate<String, Object> kafkaTemplate;
 
     public VirtualMachineData createVirtualMachine(UUID projectId, VirtualMachineData virtualMachineData) {

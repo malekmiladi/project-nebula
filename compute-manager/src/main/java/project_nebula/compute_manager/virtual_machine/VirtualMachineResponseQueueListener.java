@@ -13,7 +13,7 @@ public class VirtualMachineResponseQueueListener {
     VirtualMachineService virtualMachineService;
 
     @KafkaListener(
-        id = "project-nebula-virtual-machine",
+            groupId = "project-nebula-virtual-machine",
         topics = {
             "create-virtual-machine-requests",
             "start-virtual-machine-requests",
@@ -26,21 +26,21 @@ public class VirtualMachineResponseQueueListener {
         }
     }
 
-    @KafkaListener(id = "project-nebula-virtual-machine", topics = "delete-virtual-machine-responses")
+    @KafkaListener(groupId = "project-nebula-virtual-machine", topics = "delete-virtual-machine-responses")
     public void deleteVirtualMachine(VirtualMachineResponse virtualMachineResponse) {
         if (virtualMachineResponse.getError() == null) {
             virtualMachineService.deleteVirtualMachine(virtualMachineResponse.getId());
         }
     }
 
-    @KafkaListener(id = "project-nebula-virtual-machine", topics = "stop-virtual-machine-responses")
+    @KafkaListener(groupId = "project-nebula-virtual-machine", topics = "stop-virtual-machine-responses")
     public void stopVirtualMachine(VirtualMachineResponse virtualMachineResponse) {
         if (virtualMachineResponse.getError() == null) {
             virtualMachineService.stopVirtualMachine(virtualMachineResponse.getId());
         }
     }
 
-    @KafkaListener(id = "project-nebula-virtual-machine", topics = "save-virtual-machine-config-responses")
+    @KafkaListener(groupId = "project-nebula-virtual-machine", topics = "save-virtual-machine-config-responses")
     public void sendCreateVirtualMachineRequestToOrchestrator(VirtualMachineConfigurationResponse response) {
         virtualMachineService.sendCreateVirtualMachineRequestToOrchestrator(response.getId(), response.getAuthToken());
     }

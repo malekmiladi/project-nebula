@@ -1,6 +1,7 @@
 package com.project_nebula.compute_orchestrator.compute;
 
 import com.project_nebula.compute_orchestrator.compute.dao.ComputeNode;
+import jakarta.annotation.Nonnull;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
@@ -32,4 +33,5 @@ public interface ComputeRepository extends JpaRepository<ComputeNode, UUID> {
         nativeQuery = true
     )
     ComputeNode findOneByVirtualMachineSpecsAndHeartbeatTimeThreshold(@Param("heartbeatRate") int heartbeatRate);
+    boolean existsById(@Nonnull UUID id);
 }
