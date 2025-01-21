@@ -8,6 +8,7 @@ import project_nebula.compute_manager.project.dto.ProjectData;
 import project_nebula.compute_manager.project.dto.ProjectTagMetadata;
 
 import java.util.*;
+import java.util.stream.Collectors;
 
 @Service
 @AllArgsConstructor
@@ -19,12 +20,16 @@ public class ProjectService {
     public ProjectData createProject(ProjectData projectData) {
         Project newProject = ProjectMapper.toProject(projectData);
         Project savedProject = projectRepository.save(newProject);
-        List<ProjectTag> tags = new ArrayList<>();
-        for (ProjectTagMetadata tag : projectData.getMetadata().getTags()) {
-            ProjectTag newTag = ProjectTagMapper.toProjectTag(tag);
-            newTag.setProject(savedProject);
-            tags.add(newTag);
-        }
+        List<ProjectTag> tags = projectData
+            .getMetadata()
+            .getTags()
+            .stream()
+            .map(tag -> {
+                ProjectTag newTag = ProjectTagMapper.toProjectTag(tag);
+                newTag.setProject(savedProject);
+                return newTag;
+            })
+            .collect(Collectors.toList());
         projectTagRepository.saveAll(tags);
         return ProjectMapper.toProjectData(newProject);
     }
@@ -50,11 +55,7 @@ public class ProjectService {
 
     public List<ProjectData> getAllProjects(UUID userId) {
         List<Project> projects = projectRepository.findByUserId(userId);
-        List<ProjectData> responseBody  = new ArrayList<>();
-        for (Project project : projects) {
-            responseBody.add(ProjectMapper.toProjectData(project));
-        }
-        return responseBody;
+        return projects.stream().map(ProjectMapper::toProjectData).collect(Collectors.toList());
     }
 
     public ProjectTagMetadata addTag(UUID projectId, ProjectTagMetadata tag) {

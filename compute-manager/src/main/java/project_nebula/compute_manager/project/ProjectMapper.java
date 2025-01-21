@@ -9,64 +9,61 @@ import project_nebula.compute_manager.virtual_machine.VirtualMachineMapper;
 import project_nebula.compute_manager.virtual_machine.dao.VirtualMachine;
 import project_nebula.compute_manager.virtual_machine.dto.VirtualMachineData;
 
-import java.util.ArrayList;
 import java.util.List;
+import java.util.stream.Collectors;
 
 public class ProjectMapper {
     public static Project toProject(ProjectData projectData) {
 
-        List<ProjectTag> tags = new ArrayList<>();
-        for (ProjectTagMetadata tag : projectData.getMetadata().getTags()) {
-            tags.add(
-                ProjectTagMapper.toProjectTag(tag)
-            );
-        }
+        List<ProjectTag> tags = projectData
+            .getMetadata()
+            .getTags()
+            .stream()
+            .map(ProjectTagMapper::toProjectTag)
+            .collect(Collectors.toList());
 
-        List<VirtualMachine> virtualMachines = new ArrayList<>();
-        for (VirtualMachineData virtualMachine : projectData.getVirtualMachines()) {
-            virtualMachines.add(
-                    VirtualMachineMapper.toVirtualMachine(virtualMachine)
-            );
-        }
+        List<VirtualMachine> virtualMachines = projectData
+            .getVirtualMachines()
+            .stream()
+            .map(VirtualMachineMapper::toVirtualMachine)
+            .collect(Collectors.toList());
 
         return Project.builder()
-                .id(projectData.getId())
-                .userId(projectData.getMetadata().getUserId())
-                .name(projectData.getMetadata().getName())
-                .description(projectData.getMetadata().getDescription())
-                .tags(tags)
-                .instances(virtualMachines)
-                .build();
+            .id(projectData.getId())
+            .userId(projectData.getMetadata().getUserId())
+            .name(projectData.getMetadata().getName())
+            .description(projectData.getMetadata().getDescription())
+            .tags(tags)
+            .instances(virtualMachines)
+            .build();
     }
 
     public static ProjectData toProjectData(Project project) {
 
-        List<ProjectTagMetadata> tags = new ArrayList<>();
-        for (ProjectTag tag : project.getTags()) {
-            tags.add(
-                ProjectTagMapper.toProjectTagMetadata(tag)
-            );
-        }
+        List<ProjectTagMetadata> tags = project
+            .getTags()
+            .stream()
+            .map(ProjectTagMapper::toProjectTagMetadata)
+            .collect(Collectors.toList());
 
-        List<VirtualMachineData> virtualMachines = new ArrayList<>();
-        for (VirtualMachine virtualMachine : project.getInstances()) {
-            virtualMachines.add(
-                    VirtualMachineMapper.toVirtualMachineData(virtualMachine)
-            );
-        }
+        List<VirtualMachineData> virtualMachines = project
+            .getInstances()
+            .stream()
+            .map(VirtualMachineMapper::toVirtualMachineData)
+            .collect(Collectors.toList());
 
         ProjectMetadata metadata = ProjectMetadata.builder()
-                .userId(project.getUserId())
-                .name(project.getName())
-                .description(project.getDescription())
-                .tags(tags)
-                .build();
+            .userId(project.getUserId())
+            .name(project.getName())
+            .description(project.getDescription())
+            .tags(tags)
+            .build();
 
         return ProjectData.builder()
-                .id(project.getId())
-                .metadata(metadata)
-                .virtualMachines(virtualMachines)
-                .build();
+            .id(project.getId())
+            .metadata(metadata)
+            .virtualMachines(virtualMachines)
+            .build();
     }
 
 }
