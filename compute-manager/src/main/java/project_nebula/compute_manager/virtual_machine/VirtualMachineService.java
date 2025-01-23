@@ -1,5 +1,6 @@
 package project_nebula.compute_manager.virtual_machine;
 
+import com.project_nebula.shared.MessageQueueConfig;
 import com.project_nebula.shared.resource.VirtualMachineConfigurationRequest;
 import com.project_nebula.shared.resource.VirtualMachineMetadata;
 import com.project_nebula.shared.resource.VirtualMachineRequest;
@@ -60,12 +61,12 @@ public class VirtualMachineService {
             vm.setState(VirtualMachineState.DELETING);
             VirtualMachine savedVirtualMachine = virtualMachineRepository.save(vm);
             VirtualMachineRequest request = VirtualMachineMapper.toVirtualMachineRequest(savedVirtualMachine, null);
-            kafkaTemplate.send("delete-virtual-machine-requests", request);
+            kafkaTemplate.send(MessageQueueConfig.TOPIC_START_VM_REQUEST, request);
 
             VirtualMachineConfigurationRequest configDeleteRequest = VirtualMachineConfigurationRequest.builder()
                     .id(id)
                     .build();
-            kafkaTemplate.send("delete-virtual-machine-config-requests", configDeleteRequest);
+            kafkaTemplate.send(MessageQueueConfig.TOPIC_DELETE_VM_REQUEST, configDeleteRequest);
             return VirtualMachineMapper.toVirtualMachineData(savedVirtualMachine);
         }
         throw new NoSuchElementException("Virtual machine with id " + id + " does not exist");
@@ -93,7 +94,7 @@ public class VirtualMachineService {
                 .config(config)
                 .id(id)
                 .build();
-        kafkaTemplate.send("save-virtual-machine-config-requests", request);
+        kafkaTemplate.send(MessageQueueConfig.TOPIC_VM_CONFIG_SAVE_REQUEST, request);
     }
 
     public void sendCreateVirtualMachineRequestToOrchestrator(UUID id, String authToken) {
@@ -101,7 +102,7 @@ public class VirtualMachineService {
         if (virtualMachine.isPresent()) {
             VirtualMachine vm = virtualMachine.get();
             VirtualMachineRequest request = VirtualMachineMapper.toVirtualMachineRequest(vm, authToken);
-            kafkaTemplate.send("create-virtual-machine-requests", request);
+            kafkaTemplate.send(MessageQueueConfig.TOPIC_CREATE_VM_REQUEST, request);
         }
     }
 
@@ -133,21 +134,21 @@ public class VirtualMachineService {
     private VirtualMachineData runStopVirtualMachineWorkflow(UUID id, VirtualMachine vm) {
         vm.setState(VirtualMachineState.STOPPING);
         VirtualMachineRequest request = VirtualMachineMapper.toVirtualMachineRequest(vm, null);
-        kafkaTemplate.send("stop-virtual-machine-requests", request);
+        kafkaTemplate.send(MessageQueueConfig.TOPIC_STOP_VM_REQUEST, request);
         return VirtualMachineMapper.toVirtualMachineData(vm);
     }
 
     private VirtualMachineData runRestartVirtualMachineWorkflow(UUID id, VirtualMachine vm) {
         vm.setState(VirtualMachineState.RESTARTING);
         VirtualMachineRequest request = VirtualMachineMapper.toVirtualMachineRequest(vm, null);
-        kafkaTemplate.send("restart-virtual-machine-requests", request);
+        kafkaTemplate.send(MessageQueueConfig.TOPIC_RESTART_VM_REQUEST, request);
         return VirtualMachineMapper.toVirtualMachineData(vm);
     }
 
     private VirtualMachineData runStartVirtualMachineWorkflow(UUID id, VirtualMachine vm) {
         vm.setState(VirtualMachineState.STARTED);
         VirtualMachineRequest request = VirtualMachineMapper.toVirtualMachineRequest(vm, null);
-        kafkaTemplate.send("start-virtual-machine-requests", request);
+        kafkaTemplate.send(MessageQueueConfig.TOPIC_START_VM_REQUEST, request);
         return VirtualMachineMapper.toVirtualMachineData(vm);
     }
 
