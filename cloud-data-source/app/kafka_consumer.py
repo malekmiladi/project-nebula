@@ -26,7 +26,6 @@ def main():
     consumer.subscribe([consumer_topic])
 
     producer = Producer(conf)
-    headers = [('spring_json_header_types', b'{"type":"com.project_nebula.shared.resource.VirtualMachineConfigurationResponse"}')]
     while True:
         try:
             msg = consumer.poll(1.0)
@@ -40,7 +39,7 @@ def main():
             instance_config.update({"_id": uuid.UUID(instance_id).hex})
             instance_config.update({"auth_token": auth_token})
             db.save(instance_config)
-            producer.produce(topic=producer_topic, value=f'{{"id": "{instance_id}", "authToken": "{auth_token}"}}', headers=headers)
+            producer.produce(topic=producer_topic, value=f'{{"id": "{instance_id}", "authToken": "{auth_token}"}}')
         except KeyboardInterrupt:
             break
     consumer.close()

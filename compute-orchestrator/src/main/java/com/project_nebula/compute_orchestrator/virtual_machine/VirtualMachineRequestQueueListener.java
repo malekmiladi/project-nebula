@@ -1,5 +1,6 @@
 package com.project_nebula.compute_orchestrator.virtual_machine;
 
+import com.project_nebula.shared.MessageQueueConfig;
 import com.project_nebula.shared.resource.VirtualMachineRequest;
 import com.project_nebula.shared.resource.VirtualMachineResponse;
 import com.project_nebula.shared.utils.Result;
@@ -17,34 +18,34 @@ public class VirtualMachineRequestQueueListener {
     private final VirtualMachineService virtualMachineService;
     private final KafkaTemplate<String, Object> kafkaTemplate;
 
-    @KafkaListener(groupId = "project-nebula-virtual-machine", topics = "create-virtual-machine-requests")
+    @KafkaListener(groupId = MessageQueueConfig.GROUP_ID, topics = MessageQueueConfig.TOPIC_CREATE_VM_REQUEST)
     public void createVirtualMachine(VirtualMachineRequest virtualMachineRequest) {
         Result<VirtualMachineResponse> response = virtualMachineService.createVirtualMachine(virtualMachineRequest);
-        kafkaTemplate.send("create-virtual-machine-responses", response.getValue());
+        kafkaTemplate.send(MessageQueueConfig.TOPIC_VM_CONFIG_SAVE_RESPONSE, response.getValue());
     }
 
-    @KafkaListener(groupId = "project-nebula-virtual-machine", topics = "stop-virtual-machine-requests")
+    @KafkaListener(groupId = MessageQueueConfig.GROUP_ID, topics = MessageQueueConfig.TOPIC_STOP_VM_REQUEST)
     public void stopVirtualMachine(VirtualMachineRequest virtualMachineRequest) {
         Result<VirtualMachineResponse> response = virtualMachineService.stopVirtualMachine(virtualMachineRequest);
-        kafkaTemplate.send("stop-virtual-machine-responses", response.getValue());
+        kafkaTemplate.send(MessageQueueConfig.TOPIC_STOP_VM_RESPONSE, response.getValue());
     }
 
-    @KafkaListener(groupId = "project-nebula-virtual-machine", topics = "delete-virtual-machine-requests")
+    @KafkaListener(groupId = MessageQueueConfig.GROUP_ID, topics = MessageQueueConfig.TOPIC_DELETE_VM_REQUEST)
     public void deleteVirtualMachine(VirtualMachineRequest virtualMachineRequest) {
         Result<VirtualMachineResponse> response = virtualMachineService.deleteVirtualMachine(virtualMachineRequest);
-        kafkaTemplate.send("delete-virtual-machine-responses", response.getValue());
+        kafkaTemplate.send(MessageQueueConfig.TOPIC_DELETE_VM_RESPONSE, response.getValue());
     }
 
-    @KafkaListener(groupId = "project-nebula-virtual-machine", topics = "start-virtual-machine-requests")
+    @KafkaListener(groupId = MessageQueueConfig.GROUP_ID, topics = MessageQueueConfig.TOPIC_START_VM_REQUEST)
     public void startVirtualMachine(VirtualMachineRequest virtualMachineRequest) {
         Result<VirtualMachineResponse> response = virtualMachineService.startVirtualMachine(virtualMachineRequest);
-        kafkaTemplate.send("start-virtual-machine-responses", response.getValue());
+        kafkaTemplate.send(MessageQueueConfig.TOPIC_START_VM_RESPONSE, response.getValue());
     }
 
-    @KafkaListener(groupId = "project-nebula-virtual-machine", topics = "restart-virtual-machine-requests")
+    @KafkaListener(groupId = MessageQueueConfig.GROUP_ID, topics = MessageQueueConfig.TOPIC_RESTART_VM_REQUEST)
     public void restartVirtualMachine(VirtualMachineRequest virtualMachineRequest) {
         Result<VirtualMachineResponse> response = virtualMachineService.restartVirtualMachine(virtualMachineRequest);
-        kafkaTemplate.send("restart-virtual-machine-responses", response.getValue());
+        kafkaTemplate.send(MessageQueueConfig.TOPIC_RESTART_VM_RESPONSE, response.getValue());
     }
 
 }

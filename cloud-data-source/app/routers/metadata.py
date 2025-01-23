@@ -11,7 +11,6 @@ router = APIRouter(
 
 @router.get("/{instance_id}/meta-data")
 async def get_instance_meta_data(instance_id: str):
-
     meta_data_query = {
         "selector": {
             "_id": {
