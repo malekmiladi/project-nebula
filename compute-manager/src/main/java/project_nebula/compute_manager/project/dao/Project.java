@@ -32,9 +32,11 @@ public class Project {
 
     @OneToMany(mappedBy = "project", cascade = CascadeType.MERGE)
     @Nonnull
+    @Builder.Default
     private List<ProjectTag> tags = new ArrayList<>();
 
     @OneToMany(mappedBy = "project")
+    @Builder.Default
     private List<VirtualMachine> instances = new ArrayList<>();
 
 }

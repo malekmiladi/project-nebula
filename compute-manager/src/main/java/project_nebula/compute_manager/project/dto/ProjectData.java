@@ -15,6 +15,8 @@ public class ProjectData {
 
     private UUID id;
     private ProjectMetadata metadata;
+
+    @Builder.Default
     private List<VirtualMachineData> virtualMachines = new ArrayList<>();
 
 }

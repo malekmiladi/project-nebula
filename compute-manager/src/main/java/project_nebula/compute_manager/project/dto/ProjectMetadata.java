@@ -15,6 +15,8 @@ public class ProjectMetadata {
     private UUID userId;
     private String name;
     private String description;
+
+    @Builder.Default
     private List<ProjectTagMetadata> tags = new ArrayList<>();
 
 }

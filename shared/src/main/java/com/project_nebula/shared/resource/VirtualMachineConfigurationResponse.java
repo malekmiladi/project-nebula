@@ -6,10 +6,11 @@ import java.util.UUID;
 
 @Builder
 @AllArgsConstructor
+@NoArgsConstructor
 @Data
 public class VirtualMachineConfigurationResponse {
 
-    private final String authToken;
-    private final UUID id;
+    private String authToken;
+    private UUID id;
 
 }

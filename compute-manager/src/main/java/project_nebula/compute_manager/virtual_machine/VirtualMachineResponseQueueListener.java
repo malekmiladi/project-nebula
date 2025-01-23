@@ -11,7 +11,7 @@ import org.springframework.stereotype.Service;
 @RequiredArgsConstructor
 public class VirtualMachineResponseQueueListener {
 
-    VirtualMachineService virtualMachineService;
+    private final VirtualMachineService virtualMachineService;
 
     @KafkaListener(
         groupId = MessageQueueConfig.GROUP_ID,

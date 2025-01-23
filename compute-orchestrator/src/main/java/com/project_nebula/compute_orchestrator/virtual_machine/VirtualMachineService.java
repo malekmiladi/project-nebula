@@ -25,8 +25,8 @@ import java.util.UUID;
 @RequiredArgsConstructor
 public class VirtualMachineService {
 
-    VirtualMachineRepository virtualMachineRepository;
-    ComputeService computeService;
+    private final VirtualMachineRepository virtualMachineRepository;
+    private final ComputeService computeService;
 
     public Result<VirtualMachineResponse> createVirtualMachine(VirtualMachineRequest virtualMachineRequest) {
         ComputeNodeObject node = computeService.findNodeForVirtualMachine(virtualMachineRequest);
