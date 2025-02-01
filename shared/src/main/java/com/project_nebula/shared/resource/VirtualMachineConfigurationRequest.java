@@ -7,9 +7,10 @@ import java.util.UUID;
 @Builder
 @Data
 @AllArgsConstructor
+@NoArgsConstructor
 public class VirtualMachineConfigurationRequest {
 
-    private final UUID id;
-    private final String config;
+    private UUID id;
+    private String config;
 
 }

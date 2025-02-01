@@ -25,7 +25,7 @@ public class VirtualMachineRequestQueueListener {
     )
     public void createVirtualMachine(VirtualMachineRequest virtualMachineRequest) {
         Result<VirtualMachineResponse> response = virtualMachineService.createVirtualMachine(virtualMachineRequest);
-        kafkaTemplate.send(MessageQueueConfig.TOPIC_VM_CONFIG_SAVE_RESPONSE, response.getValue());
+        kafkaTemplate.send(MessageQueueConfig.TOPIC_CREATE_VM_RESPONSE, response.getValue());
     }
 
     @KafkaListener(

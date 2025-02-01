@@ -7,8 +7,9 @@ import java.util.UUID;
 @Builder
 @Data
 @AllArgsConstructor
+@NoArgsConstructor
 public class VirtualMachineResponse {
-    private final UUID id;
-    private final VirtualMachineMetadata metadata;
-    private final VirtualMachineError error;
+    private UUID id;
+    private VirtualMachineMetadata metadata;
+    private VirtualMachineError error;
 }
