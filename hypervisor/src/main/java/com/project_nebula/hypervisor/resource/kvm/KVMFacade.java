@@ -6,35 +6,22 @@ import com.project_nebula.shared.utils.Result;
 import com.project_nebula.shared.resource.image.ImageMetadata;
 import lombok.extern.slf4j.Slf4j;
 import org.libvirt.*;
-import org.libvirt.Stream;
 
 import java.util.HashMap;
 
 @Slf4j
 public class KVMFacade {
 
-    private final Connect HYPERVISOR_CONNECTION;
-
+    private final ConnectionProvider connectionProvider;
     private final DomainManager domainManager;
     private final StorageManager storageManager;
     private final NetworkManager networkManager;
 
     public KVMFacade(String hyperVisorConnectionUri, String defaultStoragePoolName, String defaultStoragePoolLocation, String networkName) throws Exception {
-        HYPERVISOR_CONNECTION = connectToHypervisor(hyperVisorConnectionUri);
-        storageManager = new StorageManager(HYPERVISOR_CONNECTION, defaultStoragePoolName, defaultStoragePoolLocation);
-        domainManager = new DomainManager(HYPERVISOR_CONNECTION, defaultStoragePoolLocation, networkName);
-        networkManager = new NetworkManager(HYPERVISOR_CONNECTION);
-    }
-
-    public Connect connectToHypervisor(String hypervisorUri) throws Exception {
-        try {
-            Connect conn = new Connect(hypervisorUri);
-            log.info("Connected to Hypervisor at \"{}\"", hypervisorUri);
-            return conn;
-        } catch (LibvirtException exception) {
-            log.error("Failed to connect to hypervisor at \"{}\": {}", hypervisorUri, exception.getMessage());
-            throw new Exception("Failed to connect to hypervisor. Please verify that your system supports KVM virtualization.");
-        }
+        connectionProvider = ConnectionProvider.getInstance(hyperVisorConnectionUri);
+        storageManager = new StorageManager(connectionProvider.getConnection(), defaultStoragePoolName, defaultStoragePoolLocation);
+        domainManager = new DomainManager(connectionProvider.getConnection(), defaultStoragePoolLocation, networkName);
+        networkManager = new NetworkManager(connectionProvider.getConnection());
     }
 
     public Result<VirtualMachineMetadata> createVirtualMachine(String id, VirtualMachineSpecs specs, ImageMetadata image, String cloudDatasource) {
@@ -48,7 +35,7 @@ public class KVMFacade {
             storageManager.uploadImageToVolume(
                     image.getSource(),
                     image.getUrl(),
-                    HYPERVISOR_CONNECTION.streamNew(Stream.VIR_STREAM_NONBLOCK),
+                    connectionProvider.getNewStream(),
                     newVolume
             );
             newDomain = domainManager.createDomain(id, specs, cloudDatasource);
