@@ -6,7 +6,7 @@ import lombok.*;
 @AllArgsConstructor
 @Data
 public class ComputeNodeSpecs {
-    private final int cpus;
-    private final int memory;
-    private final int storage;
+    private int cpus;
+    private int memory;
+    private int storage;
 }

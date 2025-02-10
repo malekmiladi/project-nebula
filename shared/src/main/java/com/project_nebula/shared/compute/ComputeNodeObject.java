@@ -7,6 +7,6 @@ import lombok.*;
 @Builder
 @AllArgsConstructor
 public class ComputeNodeObject {
-    private final ComputeNodeMetadata metadata;
-    private final ComputeNodeSpecs specs;
+    private ComputeNodeMetadata metadata;
+    private ComputeNodeSpecs specs;
 }

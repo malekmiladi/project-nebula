@@ -28,14 +28,22 @@ public class VirtualMachineResponseQueueListener {
         }
     }
 
-    @KafkaListener(groupId = MessageQueueConfig.GROUP_ID, topics = MessageQueueConfig.TOPIC_DELETE_VM_RESPONSE, properties = {MessageQueueConfig.VM_OPERATION_RESPONSE_TYPE_MAPPING})
+    @KafkaListener(
+        groupId = MessageQueueConfig.GROUP_ID,
+        topics = MessageQueueConfig.TOPIC_DELETE_VM_RESPONSE,
+        properties = {MessageQueueConfig.VM_OPERATION_RESPONSE_TYPE_MAPPING}
+    )
     public void deleteVirtualMachine(VirtualMachineResponse virtualMachineResponse) {
         if (virtualMachineResponse.getError() == null) {
             virtualMachineService.deleteVirtualMachine(virtualMachineResponse.getId());
         }
     }
 
-    @KafkaListener(groupId = MessageQueueConfig.GROUP_ID, topics = MessageQueueConfig.TOPIC_STOP_VM_RESPONSE, properties = {MessageQueueConfig.VM_OPERATION_RESPONSE_TYPE_MAPPING})
+    @KafkaListener(
+        groupId = MessageQueueConfig.GROUP_ID,
+        topics = MessageQueueConfig.TOPIC_STOP_VM_RESPONSE,
+        properties = {MessageQueueConfig.VM_OPERATION_RESPONSE_TYPE_MAPPING}
+    )
     public void stopVirtualMachine(VirtualMachineResponse virtualMachineResponse) {
         if (virtualMachineResponse.getError() == null) {
             virtualMachineService.stopVirtualMachine(virtualMachineResponse.getId());

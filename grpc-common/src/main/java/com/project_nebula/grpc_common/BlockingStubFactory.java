@@ -22,11 +22,12 @@ public class BlockingStubFactory {
         return channelBuilder.build();
     }
 
-    private static <T> AbstractBlockingStub<?> configureStub(GRPCClientConfiguration configuration, AbstractBlockingStub<?> stub) {
+    private static AbstractBlockingStub<?> configureStub(GRPCClientConfiguration configuration, AbstractBlockingStub<?> stub) {
         if (configuration.isTlsEnable()) {
             stub = stub.withCallCredentials(configuration.getCredentials());
         }
-        // ... if there's any further config
+        // ... if there's any further config (compression, deadline...)
+
         return stub;
     }
 
