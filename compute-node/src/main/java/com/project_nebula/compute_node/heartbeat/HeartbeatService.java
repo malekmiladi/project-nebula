@@ -24,8 +24,9 @@ public class HeartbeatService {
                 .hostname(conf.getOrchestratorHostname())
                 .port(conf.getOrchestratorPort())
                 .tlsEnable(conf.isOrchestratorTLSEnable())
+                .credentials(null)
                 .build();
-        heartbeatClient = new HeartbeatClient(this.clientConf, null);
+        heartbeatClient = new HeartbeatClient(this.clientConf);
     }
 
     @Scheduled(fixedDelayString = "${project-nebula.compute-node.heartbeat.rate.seconds}", timeUnit = TimeUnit.SECONDS)

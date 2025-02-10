@@ -1,30 +1,19 @@
 package com.project_nebula.grpc_common.registration;
 
+import com.project_nebula.grpc_common.BlockingStubFactory;
 import com.project_nebula.grpc_common.GRPCClientConfiguration;
 import com.project_nebula.grpc_common.orchestrator_registration.proto.*;
 import com.project_nebula.shared.compute.ComputeNodeObject;
-import io.grpc.CallCredentials;
-import io.grpc.ManagedChannel;
-import io.grpc.ManagedChannelBuilder;
 
 public class RegistrationClient {
 
     private final OrchestratorRegistrationGrpc.OrchestratorRegistrationBlockingStub blockingStub;
-    private final CallCredentials callCredentials;
-    private final GRPCClientConfiguration conf;
     private final ComputeNodeObject node;
 
-    public RegistrationClient(GRPCClientConfiguration conf, ComputeNodeObject node, CallCredentials callCredentials) {
-        this.conf = conf;
+    public RegistrationClient(GRPCClientConfiguration conf, ComputeNodeObject node) {
         this.node = node;
-        this.callCredentials = callCredentials;
-        ManagedChannelBuilder<?> channelBuilder = ManagedChannelBuilder
-                .forAddress(conf.getHostname(), conf.getPort());
-        if (!conf.isTlsEnable()) {
-            channelBuilder.usePlaintext();
-        }
-        ManagedChannel channel = channelBuilder.build();
-        this.blockingStub = OrchestratorRegistrationGrpc.newBlockingStub(channel);
+        this.blockingStub = (OrchestratorRegistrationGrpc.OrchestratorRegistrationBlockingStub) BlockingStubFactory
+                .createStub(OrchestratorRegistrationGrpc.class, conf);
     }
 
     private RegistrationParameters createNewRegistrationRequest() {
@@ -47,11 +36,6 @@ public class RegistrationClient {
     }
 
     public RegistrationAcknowledge registerComputeNode() {
-        RegistrationParameters registrationParameters = createNewRegistrationRequest();
-        if (conf.isTlsEnable()) {
-            return blockingStub.withCallCredentials(callCredentials).registerComputeNode(registrationParameters);
-        } else {
-            return blockingStub.registerComputeNode(registrationParameters);
-        }
+        return blockingStub.registerComputeNode(createNewRegistrationRequest());
     }
 }

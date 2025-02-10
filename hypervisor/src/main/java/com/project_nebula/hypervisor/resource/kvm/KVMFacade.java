@@ -24,6 +24,14 @@ public class KVMFacade {
         networkManager = new NetworkManager(connectionProvider.getConnection());
     }
 
+    public boolean isOperational() {
+        try {
+            return connectionProvider.getConnection().isConnected();
+        } catch (Exception e) {
+            return false;
+        }
+    }
+
     public Result<VirtualMachineMetadata> createVirtualMachine(String id, VirtualMachineSpecs specs, ImageMetadata image, String cloudDatasource) {
         log.info("Creating virtual machine { id: {}, cpus: {}, memory: {}GB, disk: {}GB }", id, specs.getCpus(), specs.getMemory(), specs.getDisk());
         StorageVol newVolume = null;
@@ -118,49 +126,6 @@ public class KVMFacade {
             throw cleanupException;
         }
 
-    }
-
-    private void cleanupResources(String id, Domain domain, StorageVol volume) throws Exception {
-        Exception cleanupException = null;
-        if (domain != null) {
-            try {
-                log.info("Shutting down Domain \"{}\"", id);
-                domainManager.shutdownDomain(domain, true);
-            } catch (Exception e) {
-                log.error("Failed to shut down Domain \"{}\"", id);
-                cleanupException = e;
-            }
-        }
-        if (volume != null) {
-            try {
-                log.info("Deleting volume \"{}\".qcow2", id);
-                storageManager.deleteVolume(id);
-            } catch (Exception e) {
-                log.error("Failed to delete volume \"{}\".qcow2", id);
-                if (cleanupException == null) {
-                    cleanupException = e;
-                } else {
-                    cleanupException.addSuppressed(e);
-                }
-            }
-        }
-        if (domain != null) {
-            try {
-                log.info("Deleting Domain \"{}\"", id);
-                domainManager.deleteDomain(domain);
-            } catch (Exception e) {
-                log.info("Failed to delete Domain \"{}\"", id);
-                if (cleanupException == null) {
-                    cleanupException = e;
-                } else {
-                    cleanupException.addSuppressed(e);
-                }
-            }
-        }
-
-        if (cleanupException != null) {
-            throw cleanupException;
-        }
     }
 
     public Result<VirtualMachineMetadata> deleteVirtualMachine(String id) {

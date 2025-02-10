@@ -1,26 +1,15 @@
 package com.project_nebula.grpc_common.heartbeat;
 
+import com.project_nebula.grpc_common.BlockingStubFactory;
 import com.project_nebula.grpc_common.GRPCClientConfiguration;
 import com.project_nebula.grpc_common.heartbeat.proto.*;
-import io.grpc.CallCredentials;
-import io.grpc.ManagedChannel;
-import io.grpc.ManagedChannelBuilder;
 
 public class HeartbeatClient {
     private final HeartbeatServiceGrpc.HeartbeatServiceBlockingStub blockingStub;
-    private final CallCredentials callCredentials;
-    private final GRPCClientConfiguration conf;
 
-    public HeartbeatClient(GRPCClientConfiguration conf, CallCredentials callCredentials) {
-        this.conf = conf;
-        this.callCredentials = callCredentials;
-        ManagedChannelBuilder<?> channelBuilder = ManagedChannelBuilder
-                .forAddress(conf.getHostname(), conf.getPort());
-        if (!conf.isTlsEnable()) {
-            channelBuilder.usePlaintext();
-        }
-        ManagedChannel channel = channelBuilder.build();
-        this.blockingStub = HeartbeatServiceGrpc.newBlockingStub(channel);
+    public HeartbeatClient(GRPCClientConfiguration conf) {
+        this.blockingStub = (HeartbeatServiceGrpc.HeartbeatServiceBlockingStub) BlockingStubFactory
+                .createStub(HeartbeatServiceGrpc.class, conf);
     }
 
     private Heartbeat createNewHeartbeat(String id) {
@@ -35,16 +24,8 @@ public class HeartbeatClient {
     }
 
     public boolean sendHeartBeat(String id) {
-        Heartbeat heartbeat = createNewHeartbeat(id);
-        if (conf.isTlsEnable()) {
-            return blockingStub
-                    .withCallCredentials(callCredentials)
-                    .sendHeartbeat(heartbeat)
-                    .getAck();
-        } else {
-            return blockingStub
-                    .sendHeartbeat(heartbeat)
-                    .getAck();
-        }
+        return blockingStub
+                .sendHeartbeat(createNewHeartbeat(id))
+                .getAck();
     }
 }

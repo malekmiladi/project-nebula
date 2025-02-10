@@ -13,7 +13,7 @@ import java.util.concurrent.TimeUnit;
 public final class ConnectionProvider implements AutoCloseable {
 
     private static ConnectionProvider instance;
-    private Connect HYPERVISOR_CONNECTION;
+    private Connect hypervisorConnection;
 
     private final String uri;
     private boolean isConnected = false;
@@ -22,7 +22,7 @@ public final class ConnectionProvider implements AutoCloseable {
 
     private ConnectionProvider(String hyperVisorConnectionUri) throws Exception {
         uri = hyperVisorConnectionUri;
-        HYPERVISOR_CONNECTION = connectToHypervisor(uri);
+        hypervisorConnection = connectToHypervisor(uri);
         startHealthCheckThread();
     }
 
@@ -50,18 +50,18 @@ public final class ConnectionProvider implements AutoCloseable {
         if (!isConnected) {
             throw new RuntimeException("Service is unreachable. Hypervisor unreachable.");
         }
-        return HYPERVISOR_CONNECTION;
+        return hypervisorConnection;
     }
 
     public Stream getNewStream() throws Exception {
-        return HYPERVISOR_CONNECTION.streamNew(Stream.VIR_STREAM_NONBLOCK);
+        return hypervisorConnection.streamNew(Stream.VIR_STREAM_NONBLOCK);
     }
 
     private void startHealthCheckThread() {
         healthCheckWorker.scheduleAtFixedRate(() -> {
             if (!isConnected) {
                 try {
-                    HYPERVISOR_CONNECTION = connectToHypervisor(uri);
+                    hypervisorConnection = connectToHypervisor(uri);
                 } catch (Exception e) {
                     log.error(e.getMessage());
                 }
@@ -72,7 +72,7 @@ public final class ConnectionProvider implements AutoCloseable {
     @Override
     public void close() {
         try {
-            HYPERVISOR_CONNECTION.close();
+            hypervisorConnection.close();
         } catch (Exception e) {
             log.error("Failed to close connection to hypervisor: {}", e.getMessage());
         } finally {

@@ -7,6 +7,7 @@ import project_nebula.compute_manager.project.dao.ProjectTag;
 import project_nebula.compute_manager.project.dto.ProjectData;
 import project_nebula.compute_manager.project.dto.ProjectTagMetadata;
 
+import java.text.MessageFormat;
 import java.util.*;
 import java.util.stream.Collectors;
 
@@ -35,22 +36,22 @@ public class ProjectService {
     }
 
     public ProjectData updateProject(UUID id, ProjectData projectData) throws NoSuchElementException {
-        if (projectRepository.findById(id).isPresent()) {
-            Project project = ProjectMapper.toProject(projectData);
-            Project savedProject = projectRepository.save(project);
-            savedProject.setId(id);
-            return ProjectMapper.toProjectData(savedProject);
-        } else {
+        if (projectRepository.findById(id).isEmpty()) {
             throw new NoSuchElementException("Project with id " + id + " does not exist");
         }
+
+        Project project = ProjectMapper.toProject(projectData);
+        Project savedProject = projectRepository.save(project);
+        savedProject.setId(id);
+        return ProjectMapper.toProjectData(savedProject);
     }
 
     public void deleteProject(UUID id) {
-        if (projectRepository.findById(id).isPresent()) {
-            projectRepository.deleteById(id);
-        } else {
+        if (projectRepository.findById(id).isEmpty()) {
             throw new NoSuchElementException("Project with id " + id + " does not exist");
         }
+
+        projectRepository.deleteById(id);
     }
 
     public List<ProjectData> getAllProjects(UUID userId) {
@@ -60,14 +61,14 @@ public class ProjectService {
 
     public ProjectTagMetadata addTag(UUID projectId, ProjectTagMetadata tag) {
         Optional<Project> project = projectRepository.findById(projectId);
-        if (project.isPresent()) {
-            ProjectTag projectTag = ProjectTagMapper.toProjectTag(tag);
-            projectTag.setProject(project.get());
-            projectTagRepository.save(projectTag);
-            return ProjectTagMapper.toProjectTagMetadata(projectTag);
-        } else {
+        if (project.isEmpty()) {
             throw new NoSuchElementException("Project with id " + projectId + " does not exist");
         }
+
+        ProjectTag projectTag = ProjectTagMapper.toProjectTag(tag);
+        projectTag.setProject(project.get());
+        projectTagRepository.save(projectTag);
+        return ProjectTagMapper.toProjectTagMetadata(projectTag);
     }
 
     public ProjectTagMetadata updateTag(UUID projectId, UUID tagId, ProjectTagMetadata tag) {
@@ -81,11 +82,11 @@ public class ProjectService {
                 return ProjectTagMapper.toProjectTagMetadata(updatedTag);
             }
         }
-        throw new NoSuchElementException(
-            "Either project with id " + projectId + " does not exist," +
-            " or tag with id " + tagId + " does not exist," +
-            " or project with id " + projectId + " does not have tag with id " + tagId
-        );
+
+        throw new NoSuchElementException(MessageFormat.format(
+                "Either project with id {0} does not exist or tag with id {1} does not exist or tag with id {2} is not associated with project with id {3}",
+                projectId, tagId, tagId, projectId
+        ));
     }
 
     public void deleteTag(UUID projectId, UUID tagId) {
@@ -98,11 +99,11 @@ public class ProjectService {
                 projectTagRepository.delete(projectTag);
             }
         }
-        throw new NoSuchElementException(
-            "Either project with id " + projectId + " does not exist," +
-            " or tag with id " + tagId + " does not exist," +
-            " or project with id " + projectId + " does not have tag with id " + tagId
-        );
+        
+        throw new NoSuchElementException(MessageFormat.format(
+                "Either project with id {0} does not exist or tag with id {1} does not exist or tag with id {2} is not associated with project with id {3}",
+                projectId, tagId, tagId, projectId
+        ));
     }
 
     public Optional<Project> getProjectById(UUID id) {

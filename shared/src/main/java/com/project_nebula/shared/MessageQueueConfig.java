@@ -25,7 +25,9 @@ public final class MessageQueueConfig {
 
     public static final String VM_CONFIG_SAVE_RESPONSE_TYPE = "com.project_nebula.shared.resource.VirtualMachineConfigurationResponse";
     public static final String VM_OPERATION_REQUEST_TYPE = "com.project_nebula.shared.resource.VirtualMachineRequest";
+    public static final String VM_OPERATION_RESPONSE_TYPE = "com.project_nebula.shared.resource.VirtualMachineResponse";
 
     public static final String VM_CONFIG_SAVE_RESPONSE_TYPE_MAPPING = SPRING_JSON_VALUE_DEFAULT_TYPE_STRING + "=" + VM_CONFIG_SAVE_RESPONSE_TYPE;
     public static final String VM_OPERATION_REQUEST_TYPE_MAPPING = SPRING_JSON_VALUE_DEFAULT_TYPE_STRING + "=" + VM_OPERATION_REQUEST_TYPE;
+    public static final String VM_OPERATION_RESPONSE_TYPE_MAPPING = SPRING_JSON_VALUE_DEFAULT_TYPE_STRING + "=" + VM_OPERATION_RESPONSE_TYPE;
 }

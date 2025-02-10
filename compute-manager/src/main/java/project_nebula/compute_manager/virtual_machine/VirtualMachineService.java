@@ -13,6 +13,7 @@ import project_nebula.compute_manager.project.dao.Project;
 import project_nebula.compute_manager.virtual_machine.dao.VirtualMachine;
 import project_nebula.compute_manager.virtual_machine.dto.VirtualMachineData;
 
+import java.text.MessageFormat;
 import java.util.HashMap;
 import java.util.NoSuchElementException;
 import java.util.Optional;
@@ -28,65 +29,78 @@ public class VirtualMachineService {
 
     public VirtualMachineData createVirtualMachine(UUID projectId, VirtualMachineData virtualMachineData) {
         Optional<Project> optionalProject = projectService.getProjectById(projectId);
-        if (optionalProject.isPresent()) {
-            Project project = optionalProject.get();
-            VirtualMachine vm = VirtualMachineMapper.toVirtualMachine(virtualMachineData);
-            vm.setProject(project);
-            vm.setState(VirtualMachineState.CREATING);
-            VirtualMachine savedVirtualMachine = virtualMachineRepository.save(vm);
-            sendConfigurationToCloudDataSource(savedVirtualMachine.getId(), virtualMachineData.getConfig());
-            return VirtualMachineMapper.toVirtualMachineData(savedVirtualMachine);
+
+        if (optionalProject.isEmpty()) {
+            throw new NoSuchElementException("Project with id " + projectId + " does not exist");
         }
-        throw new NoSuchElementException("Project with id " + projectId + " does not exist");
+
+        Project project = optionalProject.get();
+        VirtualMachine vm = VirtualMachineMapper.toVirtualMachine(virtualMachineData);
+        vm.setProject(project);
+        vm.setState(VirtualMachineState.CREATING);
+        VirtualMachine savedVirtualMachine = virtualMachineRepository.save(vm);
+        sendConfigurationToCloudDataSource(savedVirtualMachine.getId(), virtualMachineData.getConfig());
+        return VirtualMachineMapper.toVirtualMachineData(savedVirtualMachine);
     }
 
     public void updateMetadata(UUID id, VirtualMachineMetadata metadata) {
         Optional<VirtualMachine> virtualMachine = virtualMachineRepository.findById(id);
-        if (virtualMachine.isPresent()) {
-            VirtualMachine vm = virtualMachine.get();
-            HashMap<String, String> ipAddresses = metadata.getIpAddresses();
-            vm.setInternalIpV4(ipAddresses.get("internalIpV4"));
-            vm.setExternalIpV4(ipAddresses.get("externalIpV4"));
-            vm.setInternalIpV6(ipAddresses.get("internalIpV6"));
-            vm.setExternalIpV6(ipAddresses.get("externalIpV6"));
-            vm.setState(metadata.getState());
-            virtualMachineRepository.save(vm);
+
+        if (virtualMachine.isEmpty()) {
+            return;
         }
+
+        VirtualMachine vm = virtualMachine.get();
+        HashMap<String, String> ipAddresses = metadata.getIpAddresses();
+        vm.setInternalIpV4(ipAddresses.get("internalIpV4"));
+        vm.setExternalIpV4(ipAddresses.get("externalIpV4"));
+        vm.setInternalIpV6(ipAddresses.get("internalIpV6"));
+        vm.setExternalIpV6(ipAddresses.get("externalIpV6"));
+        vm.setState(metadata.getState());
+        virtualMachineRepository.save(vm);
     }
 
     public VirtualMachineData startDeleteVirtualMachineWorkflow(UUID projectId, UUID id) {
         Optional<VirtualMachine> virtualMachine = virtualMachineRepository.findById(id);
-        if (virtualMachine.isPresent()) {
-            VirtualMachine vm = virtualMachine.get();
-            vm.setState(VirtualMachineState.DELETING);
-            VirtualMachine savedVirtualMachine = virtualMachineRepository.save(vm);
-            VirtualMachineRequest request = VirtualMachineMapper.toVirtualMachineRequest(savedVirtualMachine, null);
-            kafkaTemplate.send(MessageQueueConfig.TOPIC_START_VM_REQUEST, request);
-
-            VirtualMachineConfigurationRequest configDeleteRequest = VirtualMachineConfigurationRequest.builder()
-                    .id(id)
-                    .build();
-            kafkaTemplate.send(MessageQueueConfig.TOPIC_DELETE_VM_REQUEST, configDeleteRequest);
-            return VirtualMachineMapper.toVirtualMachineData(savedVirtualMachine);
+        if (virtualMachine.isEmpty()) {
+            throw new NoSuchElementException("Virtual machine with id " + id + " does not exist");
         }
-        throw new NoSuchElementException("Virtual machine with id " + id + " does not exist");
+
+        VirtualMachine vm = virtualMachine.get();
+        vm.setState(VirtualMachineState.DELETING);
+        VirtualMachine savedVirtualMachine = virtualMachineRepository.save(vm);
+        VirtualMachineRequest request = VirtualMachineMapper.toVirtualMachineRequest(savedVirtualMachine, null);
+        kafkaTemplate.send(MessageQueueConfig.TOPIC_START_VM_REQUEST, request);
+
+        VirtualMachineConfigurationRequest configDeleteRequest = VirtualMachineConfigurationRequest.builder()
+                .id(id)
+                .build();
+
+        kafkaTemplate.send(MessageQueueConfig.TOPIC_DELETE_VM_REQUEST, configDeleteRequest);
+        return VirtualMachineMapper.toVirtualMachineData(savedVirtualMachine);
     }
 
     public void deleteVirtualMachine(UUID id) {
         Optional<VirtualMachine> virtualMachine = virtualMachineRepository.findById(id);
-        if (virtualMachine.isPresent()) {
-            VirtualMachine vm = virtualMachine.get();
-            virtualMachineRepository.delete(vm);
+
+        if (virtualMachine.isEmpty()) {
+            return;
         }
+
+        VirtualMachine vm = virtualMachine.get();
+        virtualMachineRepository.delete(vm);
     }
 
     public void stopVirtualMachine(UUID id) {
         Optional<VirtualMachine> virtualMachine = virtualMachineRepository.findById(id);
-        if (virtualMachine.isPresent()) {
-            VirtualMachine vm = virtualMachine.get();
-            vm.setState(VirtualMachineState.STOPPED);
-            virtualMachineRepository.save(vm);
+
+        if (virtualMachine.isEmpty()) {
+            return;
         }
+
+        VirtualMachine vm = virtualMachine.get();
+        vm.setState(VirtualMachineState.STOPPED);
+        virtualMachineRepository.save(vm);
     }
 
     private void sendConfigurationToCloudDataSource(UUID id, String config) {
@@ -99,11 +113,14 @@ public class VirtualMachineService {
 
     public void sendCreateVirtualMachineRequestToOrchestrator(UUID id, String authToken) {
         Optional<VirtualMachine> virtualMachine = virtualMachineRepository.findById(id);
-        if (virtualMachine.isPresent()) {
-            VirtualMachine vm = virtualMachine.get();
-            VirtualMachineRequest request = VirtualMachineMapper.toVirtualMachineRequest(vm, authToken);
-            kafkaTemplate.send(MessageQueueConfig.TOPIC_CREATE_VM_REQUEST, request);
+
+        if (virtualMachine.isEmpty()) {
+            return;
         }
+
+        VirtualMachine vm = virtualMachine.get();
+        VirtualMachineRequest request = VirtualMachineMapper.toVirtualMachineRequest(vm, authToken);
+        kafkaTemplate.send(MessageQueueConfig.TOPIC_CREATE_VM_REQUEST, request);
     }
 
 
@@ -126,9 +143,11 @@ public class VirtualMachineService {
                 }
             }
         }
-        throw new NoSuchElementException("Either project with id " + projectId + " does not exist" +
-                "or virtual machine with id " + id + " does not exist" +
-                "or virtual machine with id " + id + " does not belong to project with id " + projectId);
+        // TODO: add unauthorized access control (chain of responsibility filter) after implementing user & permissions features
+        throw new NoSuchElementException(MessageFormat.format(
+                "Either project with id {0} does not exist or virtual machine with id {1} does not exist or virtual machine with id {2} is not associated with project with id {3}",
+                projectId, id, id, projectId
+        ));
     }
 
     private VirtualMachineData runStopVirtualMachineWorkflow(UUID id, VirtualMachine vm) {

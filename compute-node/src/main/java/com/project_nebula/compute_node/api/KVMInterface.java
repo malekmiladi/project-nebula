@@ -25,27 +25,22 @@ public class KVMInterface implements HypervisorInterface {
         }
     }
 
-    @Override
     public Result<VirtualMachineMetadata> createVM(String id, VirtualMachineSpecs specs, ImageMetadata metadata, String cloudDataSourceUrl) {
         return facade.createVirtualMachine(id, specs, metadata, cloudDataSourceUrl);
     }
 
-    @Override
     public Result<VirtualMachineMetadata> startVM(String id) {
         return facade.restartVirtualMachine(id);
     }
 
-    @Override
     public Result<VirtualMachineMetadata> restartVM(String id) {
         return facade.restartVirtualMachine(id);
     }
 
-    @Override
     public Result<VirtualMachineMetadata> stopVM(String id) {
         return facade.stopVirtualMachine(id);
     }
 
-    @Override
     public Result<VirtualMachineMetadata> deleteVM(String id) {
         return facade.deleteVirtualMachine(id);
     }

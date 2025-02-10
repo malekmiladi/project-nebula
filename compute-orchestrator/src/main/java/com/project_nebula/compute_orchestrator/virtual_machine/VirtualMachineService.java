@@ -66,8 +66,9 @@ public class VirtualMachineService {
                 .hostname(node.getMetadata().getHostname())
                 .port(node.getMetadata().getPort())
                 .tlsEnable(false)
+                .credentials(null)
                 .build();
-        return new VirtualMachineOperationsClient(config, null);
+        return new VirtualMachineOperationsClient(config);
     }
 
     private VirtualMachine buildVirtualMachineMessageFromRequest(UUID id, VirtualMachineRequest request) {

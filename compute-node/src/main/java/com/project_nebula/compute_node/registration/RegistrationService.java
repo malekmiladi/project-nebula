@@ -32,6 +32,7 @@ public class RegistrationService implements CommandLineRunner {
                 .hostname(conf.getOrchestratorHostname())
                 .port(conf.getOrchestratorPort())
                 .tlsEnable(conf.isOrchestratorTLSEnable())
+                .credentials(null)
                 .build();
         ComputeNodeMetadata metadata = ComputeNodeMetadata.builder()
                 .id(conf.getId().isEmpty() ? null : UUID.fromString(conf.getId()))
@@ -49,7 +50,7 @@ public class RegistrationService implements CommandLineRunner {
                 .metadata(metadata)
                 .specs(specs)
                 .build();
-        this.registrationClient = new RegistrationClient(this.grpcClientConfiguration, this.node, null);
+        this.registrationClient = new RegistrationClient(this.grpcClientConfiguration, this.node);
     }
 
     @Override
