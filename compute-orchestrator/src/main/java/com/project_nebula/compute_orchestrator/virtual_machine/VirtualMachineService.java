@@ -2,16 +2,12 @@ package com.project_nebula.compute_orchestrator.virtual_machine;
 
 import com.project_nebula.compute_orchestrator.compute.ComputeService;
 import com.project_nebula.compute_orchestrator.virtual_machine.dao.VirtualMachineInstance;
-import com.project_nebula.shared.resource.VirtualMachineRequest;
-import com.project_nebula.shared.resource.VirtualMachineResponse;
 import com.project_nebula.grpc_common.GRPCClientConfiguration;
 import com.project_nebula.grpc_common.virtual_machine_operations.VirtualMachineOperationsClient;
 import com.project_nebula.grpc_common.virtual_machine_ops.proto.*;
 import com.project_nebula.shared.compute.ComputeNodeObject;
 import com.project_nebula.shared.resource.VirtualMachineError;
-import com.project_nebula.shared.resource.VirtualMachineErrorType;
-import com.project_nebula.shared.resource.VirtualMachineMetadata;
-import com.project_nebula.shared.resource.VirtualMachineState;
+import com.project_nebula.shared.resource.*;
 import com.project_nebula.shared.utils.Result;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;

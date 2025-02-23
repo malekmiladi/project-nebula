@@ -3,7 +3,10 @@ package com.project_nebula.compute_orchestrator.virtual_machine.dao;
 import com.project_nebula.compute_orchestrator.compute.dao.ComputeNode;
 import com.project_nebula.shared.resource.VirtualMachineState;
 import jakarta.persistence.*;
-import lombok.*;
+import lombok.AllArgsConstructor;
+import lombok.Builder;
+import lombok.Data;
+import lombok.NoArgsConstructor;
 import org.springframework.data.annotation.CreatedDate;
 
 import java.sql.Date;

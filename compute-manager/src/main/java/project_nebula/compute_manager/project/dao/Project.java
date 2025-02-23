@@ -2,7 +2,10 @@ package project_nebula.compute_manager.project.dao;
 
 import jakarta.annotation.Nonnull;
 import jakarta.persistence.*;
-import lombok.*;
+import lombok.AllArgsConstructor;
+import lombok.Builder;
+import lombok.Data;
+import lombok.NoArgsConstructor;
 import project_nebula.compute_manager.virtual_machine.dao.VirtualMachine;
 
 import java.util.ArrayList;

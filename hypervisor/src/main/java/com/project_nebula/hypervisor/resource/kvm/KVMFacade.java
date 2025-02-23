@@ -1,11 +1,12 @@
 package com.project_nebula.hypervisor.resource.kvm;
 
-import com.project_nebula.shared.resource.*;
 import com.project_nebula.shared.resource.VirtualMachineError;
-import com.project_nebula.shared.utils.Result;
+import com.project_nebula.shared.resource.*;
 import com.project_nebula.shared.resource.image.ImageMetadata;
+import com.project_nebula.shared.utils.Result;
 import lombok.extern.slf4j.Slf4j;
-import org.libvirt.*;
+import org.libvirt.Domain;
+import org.libvirt.StorageVol;
 
 import java.util.HashMap;
 
@@ -34,10 +35,10 @@ public class KVMFacade {
 
     public Result<VirtualMachineMetadata> createVirtualMachine(String id, VirtualMachineSpecs specs, ImageMetadata image, String cloudDatasource) {
         log.info("Creating virtual machine { id: {}, cpus: {}, memory: {}GB, disk: {}GB }", id, specs.getCpus(), specs.getMemory(), specs.getDisk());
-        StorageVol newVolume = null;
-        Domain newDomain = null;
-        HashMap<String, String> ipAddresses = null;
-        VirtualMachineState state = null;
+        StorageVol newVolume;
+        Domain newDomain;
+        HashMap<String, String> ipAddresses;
+        VirtualMachineState state;
         try {
             newVolume = storageManager.createVolume(id, specs.getDisk());
             storageManager.uploadImageToVolume(

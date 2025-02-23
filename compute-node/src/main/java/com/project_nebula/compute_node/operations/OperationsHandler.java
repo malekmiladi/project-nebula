@@ -1,8 +1,8 @@
 package com.project_nebula.compute_node.operations;
 
 import com.project_nebula.grpc_common.virtual_machine_ops.proto.*;
-import com.project_nebula.shared.utils.Result;
 import com.project_nebula.shared.resource.VirtualMachineMetadata;
+import com.project_nebula.shared.utils.Result;
 import org.springframework.stereotype.Service;
 
 @Service

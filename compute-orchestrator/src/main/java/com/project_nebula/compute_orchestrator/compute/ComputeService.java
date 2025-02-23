@@ -2,20 +2,19 @@ package com.project_nebula.compute_orchestrator.compute;
 
 import com.project_nebula.compute_orchestrator.OrchestratorConfiguration;
 import com.project_nebula.compute_orchestrator.compute.dao.ComputeNode;
-import com.project_nebula.shared.resource.VirtualMachineRequest;
 import com.project_nebula.grpc_common.heartbeat.proto.Heartbeat;
 import com.project_nebula.grpc_common.orchestrator_registration.proto.RegistrationParameters;
 import com.project_nebula.shared.compute.ComputeNodeMetadata;
 import com.project_nebula.shared.compute.ComputeNodeObject;
 import com.project_nebula.shared.compute.ComputeNodeSpecs;
 import com.project_nebula.shared.compute.ComputeNodeState;
+import com.project_nebula.shared.resource.VirtualMachineRequest;
 import com.project_nebula.shared.resource.VirtualMachineSpecs;
 import lombok.AllArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 
 import java.sql.Timestamp;
-import java.time.Instant;
 import java.util.UUID;
 
 @Service

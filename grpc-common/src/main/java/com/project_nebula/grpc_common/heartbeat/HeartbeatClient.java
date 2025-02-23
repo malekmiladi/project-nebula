@@ -2,7 +2,9 @@ package com.project_nebula.grpc_common.heartbeat;
 
 import com.project_nebula.grpc_common.BlockingStubFactory;
 import com.project_nebula.grpc_common.GRPCClientConfiguration;
-import com.project_nebula.grpc_common.heartbeat.proto.*;
+import com.project_nebula.grpc_common.heartbeat.proto.Heartbeat;
+import com.project_nebula.grpc_common.heartbeat.proto.HeartbeatServiceGrpc;
+import com.project_nebula.grpc_common.heartbeat.proto.Status;
 
 public class HeartbeatClient {
     private final HeartbeatServiceGrpc.HeartbeatServiceBlockingStub blockingStub;

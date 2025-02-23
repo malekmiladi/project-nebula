@@ -1,7 +1,9 @@
 package com.project_nebula.shared.compute;
 
 
-import lombok.*;
+import lombok.AllArgsConstructor;
+import lombok.Builder;
+import lombok.Data;
 
 @Data
 @Builder

@@ -1,7 +1,9 @@
 package com.project_nebula.compute_orchestrator.compute.heartbeat;
 
 import com.project_nebula.compute_orchestrator.compute.ComputeService;
-import com.project_nebula.grpc_common.heartbeat.proto.*;
+import com.project_nebula.grpc_common.heartbeat.proto.Heartbeat;
+import com.project_nebula.grpc_common.heartbeat.proto.HeartbeatAcknowledge;
+import com.project_nebula.grpc_common.heartbeat.proto.HeartbeatServiceGrpc;
 import io.grpc.stub.StreamObserver;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
